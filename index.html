@@ -108,7 +108,7 @@ class Component extends DCLogic {
   state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor'}};
   VB = [-275,-85,635,400];
   SW = ['#9cbf6e','#d9a86c','#c9d8a0','#d98d63','#8fa8c8'];
-  ZONES = [{x:0,y:3.4,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
+  ZONES = [{x:0,y:3.73,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
   wr(wall){return wall==='back'?[0,17]:[3,15]}
   DEFS = [
     {id:'bed',g:'Sleeping',name:'Queen bed',w:5,d:6.7,h:2,price:0,owned:1,kind:'bed',c:'#9cbf6e'},
@@ -150,6 +150,13 @@ class Component extends DCLogic {
       return Promise.all(Object.keys(m).map(k=>fetch('sprites/'+m[k].file).then(r=>r.ok?r.text():null).then(t=>{
         if(t)m[k].uri='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(t)));
       }).catch(()=>{}))).then(()=>this.setState({sprites:m}));
+    }).catch(()=>{});
+    fetch('figma/room-shell.svg').then(r=>r.ok?r.text():null).then(t=>{
+      if(!t)return; let inner=t.replace(/^[\s\S]*?<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'');
+      // Figma exports stroke-only shapes without fill="none" (they'd default to solid black);
+      // give any fill-less path/polygon an explicit transparent fill.
+      inner=inner.replace(/<(path|polygon|polyline)(?![^>]*\bfill=)/g,'<$1 fill="none"');
+      this.setState({roomSvg:inner});
     }).catch(()=>{});
   }
   spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const key=d.wall?(d.id+'-'+(item.wall||'back')):(d.id+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
@@ -389,45 +396,53 @@ class Component extends DCLogic {
     const st=this.state, layout=st.layouts[key]||[];
     const wallC=this.props.wallColor||'#fbf2e2';
     const els=[];
-    els.push(this.pg([[20,0,7.5],[20,15,7.5],[20,15,0],[20,0,0]],'#f6ead6'));
-    els.push(this.pg([[0,3,7.5],[0,15,7.5],[0,15,0],[0,3,0]],this.sh(wallC,0.93)));
-    els.push(this.pg([[0,3,7.5],[17,3,7.5],[17,3,0],[0,3,0]],wallC));
-    els.push(this.pg([[17,0,7.5],[17,3,7.5],[17,3,0],[17,0,0]],this.sh(wallC,0.9)));
-    els.push(this.pg([[17,0,7.5],[20,0,7.5],[20,0,0],[17,0,0]],wallC));
-    els.push(this.pg([[0,2.7,7.5],[17,2.7,7.5],[17,3,7.5],[0,3,7.5]],'#fffdf5'));
-    els.push(this.pg([[-0.3,3,7.5],[-0.3,15,7.5],[0,15,7.5],[0,3,7.5]],'#fffdf5'));
-    els.push(this.pg([[16.7,0,7.5],[16.7,3,7.5],[17,3,7.5],[17,0,7.5]],'#fffdf5'));
-    els.push(this.pg([[17,-0.3,7.5],[20,-0.3,7.5],[20,0,7.5],[17,0,7.5]],'#fffdf5'));
-    els.push(this.pg([[0,3,0.26],[17,3,0.26],[17,3,0],[0,3,0]],'#fff6e6',{strokeWidth:0.8}));
-    els.push(this.pg([[0,3,0.26],[0,15,0.26],[0,15,0],[0,3,0]],'#f5e9d2',{strokeWidth:0.8}));
-    els.push(this.pg([[17,0,0.26],[17,3,0.26],[17,3,0],[17,0,0]],'#f5e9d2',{strokeWidth:0.8}));
-    els.push(this.pg([[17,0,0.26],[20,0,0.26],[20,0,0],[17,0,0]],'#fff6e6',{strokeWidth:0.8}));
-    els.push(this.pg([[0,10,6.2],[0,13.6,6.2],[0,13.6,2.5],[0,10,2.5]],'#fffdf5'));
-    els.push(this.pg([[0,10.16,6.04],[0,13.44,6.04],[0,13.44,2.66],[0,10.16,2.66]],'#cfe9f2',{strokeWidth:1}));
-    els.push(this.ln([0,11.8,2.66],[0,11.8,6.04],{stroke:'#fffdf5',strokeWidth:3}));
-    els.push(this.ln([0,10.16,4.35],[0,13.44,4.35],{stroke:'#fffdf5',strokeWidth:2.5}));
-    els.push(this.pg([[0,6.4,6.2],[0,9.6,6.2],[0,9.6,2.5],[0,6.4,2.5]],'#fffdf5'));
-    els.push(this.pg([[0,6.56,6.04],[0,9.44,6.04],[0,9.44,2.66],[0,6.56,2.66]],'#cfe9f2',{strokeWidth:1}));
-    els.push(this.ln([0,8,2.66],[0,8,6.04],{stroke:'#fffdf5',strokeWidth:3}));
-    els.push(this.ln([0,6.56,4.35],[0,9.44,4.35],{stroke:'#fffdf5',strokeWidth:2.5}));
-    els.push(this.pg([[0,3.28,6.9],[0,6.02,6.9],[0,6.02,0],[0,3.28,0]],'#e8d9bd',{strokeWidth:1}));
-    els.push(this.pg([[0,3.4,6.75],[0,5.9,6.75],[0,5.9,0],[0,3.4,0]],'#fffdf5'));
-    els.push(this.pg([[0,3.7,6.2],[0,5.6,6.2],[0,5.6,0.7],[0,3.7,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
-    els.push(this.circ(0,3.75,3.4,2.6,'#e9c46a'));
-    els.push(this.pg([[0.58,3,6.9],[3.32,3,6.9],[3.32,3,0],[0.58,3,0]],'#e8d9bd',{strokeWidth:1}));
-    els.push(this.pg([[0.7,3,6.75],[3.2,3,6.75],[3.2,3,0],[0.7,3,0]],'#fffdf5'));
-    els.push(this.pg([[1,3,6.2],[2.9,3,6.2],[2.9,3,0.7],[1,3,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
-    els.push(this.circ(1.5,3,3.4,2.6,'#e9c46a'));
     const floorPts=[[0,3,0],[17,3,0],[17,0,0],[20,0,0],[20,15,0],[0,15,0]];
-    els.push(this.pg(floorPts,'#e9b878',{strokeWidth:2}));
     const clipId='fc'+key;
+    if(st.roomSvg){
+      // Room shell loaded live from figma/room-shell.svg. The transform maps the Figma
+      // export's coordinate space onto the app's isometric space, calibrated to the floor
+      // corners so furniture still lands exactly on the floor. (Re-exporting the same Figma
+      // frame keeps this alignment; a rescaled/moved frame would need the transform retuned.)
+      els.push(React.createElement('g',{key:'shell',transform:'translate(-265,-70.5351) scale(1.111111)',dangerouslySetInnerHTML:{__html:st.roomSvg}}));
+    }else{
+      els.push(this.pg([[20,0,7.5],[20,15,7.5],[20,15,0],[20,0,0]],'#f6ead6'));
+      els.push(this.pg([[0,3,7.5],[0,15,7.5],[0,15,0],[0,3,0]],this.sh(wallC,0.93)));
+      els.push(this.pg([[0,3,7.5],[17,3,7.5],[17,3,0],[0,3,0]],wallC));
+      els.push(this.pg([[17,0,7.5],[17,3,7.5],[17,3,0],[17,0,0]],this.sh(wallC,0.9)));
+      els.push(this.pg([[17,0,7.5],[20,0,7.5],[20,0,0],[17,0,0]],wallC));
+      els.push(this.pg([[0,2.7,7.5],[17,2.7,7.5],[17,3,7.5],[0,3,7.5]],'#fffdf5'));
+      els.push(this.pg([[-0.3,3,7.5],[-0.3,15,7.5],[0,15,7.5],[0,3,7.5]],'#fffdf5'));
+      els.push(this.pg([[16.7,0,7.5],[16.7,3,7.5],[17,3,7.5],[17,0,7.5]],'#fffdf5'));
+      els.push(this.pg([[17,-0.3,7.5],[20,-0.3,7.5],[20,0,7.5],[17,0,7.5]],'#fffdf5'));
+      els.push(this.pg([[0,3,0.26],[17,3,0.26],[17,3,0],[0,3,0]],'#fff6e6',{strokeWidth:0.8}));
+      els.push(this.pg([[0,3,0.26],[0,15,0.26],[0,15,0],[0,3,0]],'#f5e9d2',{strokeWidth:0.8}));
+      els.push(this.pg([[17,0,0.26],[17,3,0.26],[17,3,0],[17,0,0]],'#f5e9d2',{strokeWidth:0.8}));
+      els.push(this.pg([[17,0,0.26],[20,0,0.26],[20,0,0],[17,0,0]],'#fff6e6',{strokeWidth:0.8}));
+      els.push(this.pg([[0,10.8,6.0],[0,14.4,6.0],[0,14.4,2.3],[0,10.8,2.3]],'#fffdf5'));
+      els.push(this.pg([[0,10.96,5.84],[0,14.24,5.84],[0,14.24,2.46],[0,10.96,2.46]],'#cfe9f2',{strokeWidth:1}));
+      els.push(this.ln([0,12.6,2.46],[0,12.6,5.84],{stroke:'#fffdf5',strokeWidth:3}));
+      els.push(this.ln([0,10.96,4.15],[0,14.24,4.15],{stroke:'#fffdf5',strokeWidth:2.5}));
+      els.push(this.pg([[0,7.2,6.0],[0,10.4,6.0],[0,10.4,2.3],[0,7.2,2.3]],'#fffdf5'));
+      els.push(this.pg([[0,7.36,5.84],[0,10.24,5.84],[0,10.24,2.46],[0,7.36,2.46]],'#cfe9f2',{strokeWidth:1}));
+      els.push(this.ln([0,8.8,2.46],[0,8.8,5.84],{stroke:'#fffdf5',strokeWidth:3}));
+      els.push(this.ln([0,7.36,4.15],[0,10.24,4.15],{stroke:'#fffdf5',strokeWidth:2.5}));
+      els.push(this.pg([[0,3.61,6.9],[0,6.35,6.9],[0,6.35,0],[0,3.61,0]],'#e8d9bd',{strokeWidth:1}));
+      els.push(this.pg([[0,3.73,6.75],[0,6.23,6.75],[0,6.23,0],[0,3.73,0]],'#fffdf5'));
+      els.push(this.pg([[0,4.03,6.2],[0,5.93,6.2],[0,5.93,0.7],[0,4.03,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
+      els.push(this.circ(0,4.08,3.4,2.6,'#e9c46a'));
+      els.push(this.pg([[0.58,3,6.9],[3.32,3,6.9],[3.32,3,0],[0.58,3,0]],'#e8d9bd',{strokeWidth:1}));
+      els.push(this.pg([[0.7,3,6.75],[3.2,3,6.75],[3.2,3,0],[0.7,3,0]],'#fffdf5'));
+      els.push(this.pg([[1,3,6.2],[2.9,3,6.2],[2.9,3,0.7],[1,3,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
+      els.push(this.circ(1.5,3,3.4,2.6,'#e9c46a'));
+      els.push(this.pg(floorPts,'#e9b878',{strokeWidth:2}));
+      const planks=[];
+      for(let y=1;y<15;y++)planks.push(this.ln([0,y,0],[20,y,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));
+      for(let y=0;y<15;y++)for(let k=0;k<3;k++){const xx=((y*5+k*7)%18)+1.2; planks.push(this.ln([xx,y,0],[xx,y+1,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));}
+      els.push(React.createElement('g',{key:'planks',clipPath:'url(#'+clipId+')'},planks));
+      els.push(this.pg([[0,15,0],[20,15,0],[20,15,-0.32],[0,15,-0.32]],'#cf9a58'));
+      els.push(this.pg([[20,0,0],[20,15,0],[20,15,-0.32],[20,0,-0.32]],'#b9834a'));
+    }
     els.push(React.createElement('clipPath',{key:'cp',id:clipId},React.createElement('polygon',{points:floorPts.map(p=>{const s=this.S(p[0],p[1],0);return s[0]+','+s[1]}).join(' ')})));
-    const planks=[];
-    for(let y=1;y<15;y++)planks.push(this.ln([0,y,0],[20,y,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));
-    for(let y=0;y<15;y++)for(let k=0;k<3;k++){const xx=((y*5+k*7)%18)+1.2; planks.push(this.ln([xx,y,0],[xx,y+1,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));}
-    els.push(React.createElement('g',{key:'planks',clipPath:'url(#'+clipId+')'},planks));
-    els.push(this.pg([[0,15,0],[20,15,0],[20,15,-0.32],[0,15,-0.32]],'#cf9a58'));
-    els.push(this.pg([[20,0,0],[20,15,0],[20,15,-0.32],[20,0,-0.32]],'#b9834a'));
     if(this.props.showDoorClearance!==false)this.ZONES.forEach(zn=>{
       els.push(this.pg([[zn.x,zn.y,0.01],[zn.x+zn.w,zn.y,0.01],[zn.x+zn.w,zn.y+zn.d,0.01],[zn.x,zn.y+zn.d,0.01]],'rgba(233,150,110,0.2)',{stroke:'#d98d63',strokeDasharray:'4 3',strokeWidth:1.2}));
     });
