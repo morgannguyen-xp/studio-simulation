@@ -1,21 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-89 -21.78 206.9 125.23" width="206.9" height="125.23">
-<rect id="bounds" x="-89" y="-21.78" width="206.9" height="125.23" fill="none" stroke="none"></rect>
-<polygon points="110.5,45.05 25.5,87.55 25.5,97.75 110.5,55.25" fill="#734f33" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="-85,32.3 25.5,87.55 25.5,97.75 -85,42.5" fill="#906340" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="0,-10.2 110.5,45.05 25.5,87.55 -85,32.3" fill="#ba8053" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="104.55,37.42 24.65,77.38 24.65,84.57 104.55,44.63" fill="#a8a396" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="-79.9,25.1 24.65,77.38 24.65,84.57 -79.9,32.3" fill="#d2cbbc" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="0,-14.85 104.55,37.42 24.65,77.38 -79.9,25.1" fill="#fffff3" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="60.1,11.84 -19.8,51.79 -19.8,55.15 60.1,15.2" fill="#6a824b" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="-79.05,22.17 -19.8,51.79 -19.8,55.15 -79.05,25.53" fill="#85a25e" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="0.85,-17.78 60.1,11.84 -19.8,51.79 -79.05,22.17" fill="#acd279" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="96.9,32.81 63.75,49.39 63.75,54.43 96.9,37.85" fill="#adaca7" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="45.05,40.04 63.75,49.39 63.75,54.43 45.05,45.08" fill="#d9d7d1" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="78.2,23.46 96.9,32.81 63.75,49.39 45.05,40.04" fill="#ffffff" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="113.9,24.55 28.9,67.05 28.9,99.45 113.9,56.95" fill="#5f4029" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="22.95,64.08 28.9,67.05 28.9,99.45 22.95,96.48" fill="#765033" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="107.95,21.57 113.9,24.55 28.9,67.05 22.95,64.08" fill="#996742" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="58.65,51.94 25.5,68.51 25.5,73.55 58.65,56.98" fill="#adaca7" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="6.8,59.16 25.5,68.51 25.5,73.55 6.8,64.2" fill="#d9d7d1" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
-<polygon points="39.95,42.59 58.65,51.94 25.5,68.51 6.8,59.16" fill="#ffffff" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<svg width="201" height="119" viewBox="0 0 201 119" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M196.15 63.4801L111.15 105.98V116.18L196.15 73.6801V63.4801Z" fill="#734F33" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M0.649994 50.7301L111.15 105.98V116.18L0.649994 60.9301V50.7301Z" fill="#906340" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M85.65 8.2301L196.15 63.4801L111.15 105.98L0.649994 50.7301L85.65 8.2301Z" fill="#BA8053" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M190.2 55.8501L110.3 95.8101V103L190.2 63.0601V55.8501Z" fill="#A8A396" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M7.44998 44.3799L110.3 95.81V103L7.44998 51.5799V44.3799Z" fill="#D2CBBC" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M85.65 3.58008L190.2 55.8501L110.3 95.8101L7.44998 44.65L85.65 3.58008Z" fill="#FFFFF3" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M145.75 30.27L65.85 70.22V73.58L145.75 33.63V30.27Z" fill="#688592" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M6.59999 40.6001L65.85 70.2201V81.27L6.59999 51.65V40.6001Z" fill="#93B0BD" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M86.5 0.650024L145.75 30.27L65.85 70.22L6.59999 40.6L86.5 0.650024Z" fill="#AFCAD7" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M182.55 51.2401L149.4 67.8201V72.8601L182.55 56.2801V51.2401Z" fill="#ADACA7" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M130.7 58.4701L149.4 67.8201V72.8601L130.7 63.5101V58.4701Z" fill="#D9D7D1" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M163.85 41.89L182.55 51.24L149.4 67.82L130.7 58.47L163.85 41.89Z" fill="white" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M144.3 70.37L111.15 86.94V91.98L144.3 75.41V70.37Z" fill="#ADACA7" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M92.45 77.5901L111.15 86.9401V91.9801L92.45 82.6301V77.5901Z" fill="#D9D7D1" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M125.6 61.02L144.3 70.37L111.15 86.94L92.45 77.59L125.6 61.02Z" fill="white" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M199.55 42.9801L114.55 85.4801V117.88L199.55 75.3801V42.9801Z" fill="#5F4029" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M108.6 82.51L114.55 85.48V117.88L108.6 114.91V82.51Z" fill="#765033" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
+<path d="M193.6 40L199.55 42.98L114.55 85.48L108.6 82.51L193.6 40Z" fill="#996742" stroke="#4A3222" stroke-width="1.3" stroke-linejoin="round"/>
 </svg>
