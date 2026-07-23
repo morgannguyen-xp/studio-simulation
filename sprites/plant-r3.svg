@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-19.64 -23.07 39.28 44.92" width="39.28" height="44.92">
+<rect id="bounds" x="-19.64" y="-23.07" width="39.28" height="44.92" fill="none" stroke="none"></rect>
+<polygon points="15.64,1.33 0,9.15 0,11.07 15.64,3.25" fill="#946043" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<polygon points="-15.64,1.33 0,9.15 0,11.07 -15.64,3.25" fill="#b87854" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<polygon points="0,-6.49 15.64,1.33 0,9.15 -15.64,1.33" fill="#ef9b6d" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<polygon points="13.6,3.25 0,10.05 0,17.85 13.6,11.05" fill="#875438" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<polygon points="-13.6,3.25 0,10.05 0,17.85 -13.6,11.05" fill="#a86946" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<polygon points="0,-3.55 13.6,3.25 0,10.05 -13.6,3.25" fill="#da875a" stroke="#4a3222" stroke-width="1.3" stroke-linejoin="round"></polygon>
+<ellipse cx="0" cy="-2.75" rx="14.88" ry="7.44" fill="#7c9a4d" stroke="#4a3222" stroke-width="1.3"></ellipse>
+<ellipse cx="0" cy="-8.75" rx="12" ry="6" fill="#8fb35e" stroke="#4a3222" stroke-width="1.3"></ellipse>
+<ellipse cx="0" cy="-14.75" rx="8.64" ry="4.32" fill="#a5c46f" stroke="#4a3222" stroke-width="1.3"></ellipse>
+</svg>
