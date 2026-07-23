@@ -1,0 +1,716 @@
+{
+ "bed-r0": {
+  "file": "bed-r0.svg",
+  "vx": -117.9,
+  "vy": -36.4,
+  "vw": 206.9,
+  "vh": 139.85
+ },
+ "bed-r1": {
+  "file": "bed-r1.svg",
+  "vx": -89,
+  "vy": -36.4,
+  "vw": 206.9,
+  "vh": 139.85
+ },
+ "bed-r2": {
+  "file": "bed-r2.svg",
+  "vx": -117.9,
+  "vy": -21.78,
+  "vw": 206.9,
+  "vh": 125.23
+ },
+ "bed-r3": {
+  "file": "bed-r3.svg",
+  "vx": -89,
+  "vy": -21.78,
+  "vw": 206.9,
+  "vh": 125.23
+ },
+ "nstand-r0": {
+  "file": "nstand-r0.svg",
+  "vx": -29.5,
+  "vy": -25.6,
+  "vw": 59,
+  "vh": 52.94
+ },
+ "nstand-r1": {
+  "file": "nstand-r1.svg",
+  "vx": -29.5,
+  "vy": -25.6,
+  "vw": 59,
+  "vh": 52.94
+ },
+ "nstand-r2": {
+  "file": "nstand-r2.svg",
+  "vx": -29.5,
+  "vy": -25.6,
+  "vw": 59,
+  "vh": 52.94
+ },
+ "nstand-r3": {
+  "file": "nstand-r3.svg",
+  "vx": -29.5,
+  "vy": -25.6,
+  "vw": 59,
+  "vh": 52.94
+ },
+ "desk-r0": {
+  "file": "desk-r0.svg",
+  "vx": -39.7,
+  "vy": -33.65,
+  "vw": 113.4,
+  "vh": 86.61
+ },
+ "desk-r1": {
+  "file": "desk-r1.svg",
+  "vx": -73.7,
+  "vy": -33.65,
+  "vw": 113.4,
+  "vh": 86.61
+ },
+ "desk-r2": {
+  "file": "desk-r2.svg",
+  "vx": -39.7,
+  "vy": -33.65,
+  "vw": 113.4,
+  "vh": 86.61
+ },
+ "desk-r3": {
+  "file": "desk-r3.svg",
+  "vx": -73.7,
+  "vy": -33.65,
+  "vw": 113.4,
+  "vh": 86.61
+ },
+ "ochair-r0": {
+  "file": "ochair-r0.svg",
+  "vx": -34.6,
+  "vy": -40,
+  "vw": 69.2,
+  "vh": 73.24
+ },
+ "ochair-r1": {
+  "file": "ochair-r1.svg",
+  "vx": -34.6,
+  "vy": -40,
+  "vw": 69.2,
+  "vh": 73.24
+ },
+ "ochair-r2": {
+  "file": "ochair-r2.svg",
+  "vx": -34.6,
+  "vy": -26.57,
+  "vw": 69.2,
+  "vh": 59.81
+ },
+ "ochair-r3": {
+  "file": "ochair-r3.svg",
+  "vx": -34.6,
+  "vy": -26.57,
+  "vw": 69.2,
+  "vh": 59.81
+ },
+ "dlamp-r0": {
+  "file": "dlamp-r0.svg",
+  "vx": -17.1,
+  "vy": -18.45,
+  "vw": 34.2,
+  "vh": 33.5
+ },
+ "dlamp-r1": {
+  "file": "dlamp-r1.svg",
+  "vx": -17.1,
+  "vy": -18.45,
+  "vw": 34.2,
+  "vh": 33.5
+ },
+ "dlamp-r2": {
+  "file": "dlamp-r2.svg",
+  "vx": -17.1,
+  "vy": -18.45,
+  "vw": 34.2,
+  "vh": 33.5
+ },
+ "dlamp-r3": {
+  "file": "dlamp-r3.svg",
+  "vx": -17.1,
+  "vy": -18.45,
+  "vw": 34.2,
+  "vh": 33.5
+ },
+ "sofa-r0": {
+  "file": "sofa-r0.svg",
+  "vx": -55,
+  "vy": -32.8,
+  "vw": 144,
+  "vh": 104.8
+ },
+ "sofa-r1": {
+  "file": "sofa-r1.svg",
+  "vx": -89,
+  "vy": -32.8,
+  "vw": 144,
+  "vh": 104.8
+ },
+ "sofa-r2": {
+  "file": "sofa-r2.svg",
+  "vx": -55,
+  "vy": -25,
+  "vw": 144,
+  "vh": 97
+ },
+ "sofa-r3": {
+  "file": "sofa-r3.svg",
+  "vx": -89,
+  "vy": -25,
+  "vw": 144,
+  "vh": 97
+ },
+ "ctable-r0": {
+  "file": "ctable-r0.svg",
+  "vx": -34.6,
+  "vy": -21.65,
+  "vw": 96.4,
+  "vh": 66.11
+ },
+ "ctable-r1": {
+  "file": "ctable-r1.svg",
+  "vx": -61.8,
+  "vy": -21.65,
+  "vw": 96.4,
+  "vh": 66.11
+ },
+ "ctable-r2": {
+  "file": "ctable-r2.svg",
+  "vx": -34.6,
+  "vy": -21.65,
+  "vw": 96.4,
+  "vh": 66.11
+ },
+ "ctable-r3": {
+  "file": "ctable-r3.svg",
+  "vx": -61.8,
+  "vy": -21.65,
+  "vw": 96.4,
+  "vh": 66.11
+ },
+ "achair-r0": {
+  "file": "achair-r0.svg",
+  "vx": -46.5,
+  "vy": -32.8,
+  "vw": 93,
+  "vh": 79.3
+ },
+ "achair-r1": {
+  "file": "achair-r1.svg",
+  "vx": -46.5,
+  "vy": -32.8,
+  "vw": 93,
+  "vh": 79.3
+ },
+ "achair-r2": {
+  "file": "achair-r2.svg",
+  "vx": -46.5,
+  "vy": -25,
+  "vw": 93,
+  "vh": 71.5
+ },
+ "achair-r3": {
+  "file": "achair-r3.svg",
+  "vx": -46.5,
+  "vy": -25,
+  "vw": 93,
+  "vh": 71.5
+ },
+ "console-r0": {
+  "file": "console-r0.svg",
+  "vx": -27.8,
+  "vy": -24.4,
+  "vw": 116.8,
+  "vh": 81.1
+ },
+ "console-r1": {
+  "file": "console-r1.svg",
+  "vx": -89,
+  "vy": -24.4,
+  "vw": 116.8,
+  "vh": 81.1
+ },
+ "console-r2": {
+  "file": "console-r2.svg",
+  "vx": -27.8,
+  "vy": -24.4,
+  "vw": 116.8,
+  "vh": 81.1
+ },
+ "console-r3": {
+  "file": "console-r3.svg",
+  "vx": -89,
+  "vy": -24.4,
+  "vw": 116.8,
+  "vh": 81.1
+ },
+ "tv-back": {
+  "file": "tv-back.svg",
+  "vx": -5.02,
+  "vy": -32.83,
+  "vw": 78.04,
+  "vh": 72.06
+ },
+ "tv-left": {
+  "file": "tv-left.svg",
+  "vx": -73.02,
+  "vy": -32.83,
+  "vw": 78.04,
+  "vh": 72.06
+ },
+ "kallax-r0": {
+  "file": "kallax-r0.svg",
+  "vx": -26.1,
+  "vy": -34,
+  "vw": 111.7,
+  "vh": 89.85
+ },
+ "kallax-r1": {
+  "file": "kallax-r1.svg",
+  "vx": -85.6,
+  "vy": -34,
+  "vw": 111.7,
+  "vh": 89.85
+ },
+ "kallax-r2": {
+  "file": "kallax-r2.svg",
+  "vx": -26.1,
+  "vy": -34,
+  "vw": 111.7,
+  "vh": 89.85
+ },
+ "kallax-r3": {
+  "file": "kallax-r3.svg",
+  "vx": -85.6,
+  "vy": -34,
+  "vw": 111.7,
+  "vh": 89.85
+ },
+ "dresser-r0": {
+  "file": "dresser-r0.svg",
+  "vx": -29.5,
+  "vy": -34,
+  "vw": 79.4,
+  "vh": 71.54
+ },
+ "dresser-r1": {
+  "file": "dresser-r1.svg",
+  "vx": -49.9,
+  "vy": -34,
+  "vw": 79.4,
+  "vh": 71.54
+ },
+ "dresser-r2": {
+  "file": "dresser-r2.svg",
+  "vx": -29.5,
+  "vy": -34,
+  "vw": 79.4,
+  "vh": 71.54
+ },
+ "dresser-r3": {
+  "file": "dresser-r3.svg",
+  "vx": -49.9,
+  "vy": -34,
+  "vw": 79.4,
+  "vh": 71.54
+ },
+ "wardrobe-r0": {
+  "file": "wardrobe-r0.svg",
+  "vx": -38,
+  "vy": -76,
+  "vw": 93,
+  "vh": 122.5
+ },
+ "wardrobe-r1": {
+  "file": "wardrobe-r1.svg",
+  "vx": -55,
+  "vy": -76,
+  "vw": 93,
+  "vh": 122.5
+ },
+ "wardrobe-r2": {
+  "file": "wardrobe-r2.svg",
+  "vx": -38,
+  "vy": -76,
+  "vw": 93,
+  "vh": 122.5
+ },
+ "wardrobe-r3": {
+  "file": "wardrobe-r3.svg",
+  "vx": -55,
+  "vy": -76,
+  "vw": 93,
+  "vh": 122.5
+ },
+ "shoerack-r0": {
+  "file": "shoerack-r0.svg",
+  "vx": -22.02,
+  "vy": -23.59,
+  "vw": 72.94,
+  "vh": 59.04
+ },
+ "shoerack-r1": {
+  "file": "shoerack-r1.svg",
+  "vx": -50.92,
+  "vy": -23.59,
+  "vw": 72.94,
+  "vh": 59.04
+ },
+ "shoerack-r2": {
+  "file": "shoerack-r2.svg",
+  "vx": -22.02,
+  "vy": -23.59,
+  "vw": 72.94,
+  "vh": 59.04
+ },
+ "shoerack-r3": {
+  "file": "shoerack-r3.svg",
+  "vx": -50.92,
+  "vy": -23.59,
+  "vw": 72.94,
+  "vh": 59.04
+ },
+ "ottoman-r0": {
+  "file": "ottoman-r0.svg",
+  "vx": -26.1,
+  "vy": -20.8,
+  "vw": 72.6,
+  "vh": 57.1
+ },
+ "ottoman-r1": {
+  "file": "ottoman-r1.svg",
+  "vx": -46.5,
+  "vy": -20.8,
+  "vw": 72.6,
+  "vh": 57.1
+ },
+ "ottoman-r2": {
+  "file": "ottoman-r2.svg",
+  "vx": -26.1,
+  "vy": -20.8,
+  "vw": 72.6,
+  "vh": 57.1
+ },
+ "ottoman-r3": {
+  "file": "ottoman-r3.svg",
+  "vx": -46.5,
+  "vy": -20.8,
+  "vw": 72.6,
+  "vh": 57.1
+ },
+ "dtable-r0": {
+  "file": "dtable-r0.svg",
+  "vx": -40,
+  "vy": -26.5,
+  "vw": 80,
+  "vh": 63.08
+ },
+ "dtable-r1": {
+  "file": "dtable-r1.svg",
+  "vx": -40,
+  "vy": -26.5,
+  "vw": 80,
+  "vh": 63.08
+ },
+ "dtable-r2": {
+  "file": "dtable-r2.svg",
+  "vx": -40,
+  "vy": -26.5,
+  "vw": 80,
+  "vh": 63.08
+ },
+ "dtable-r3": {
+  "file": "dtable-r3.svg",
+  "vx": -40,
+  "vy": -26.5,
+  "vw": 80,
+  "vh": 63.08
+ },
+ "dchair-r0": {
+  "file": "dchair-r0.svg",
+  "vx": -29.5,
+  "vy": -38.8,
+  "vw": 59,
+  "vh": 66.94
+ },
+ "dchair-r1": {
+  "file": "dchair-r1.svg",
+  "vx": -29.5,
+  "vy": -38.8,
+  "vw": 59,
+  "vh": 66.94
+ },
+ "dchair-r2": {
+  "file": "dchair-r2.svg",
+  "vx": -29.5,
+  "vy": -27.92,
+  "vw": 59,
+  "vh": 56.06
+ },
+ "dchair-r3": {
+  "file": "dchair-r3.svg",
+  "vx": -29.5,
+  "vy": -27.92,
+  "vw": 59,
+  "vh": 56.06
+ },
+ "mcart-r0": {
+  "file": "mcart-r0.svg",
+  "vx": -30.18,
+  "vy": -36.84,
+  "vw": 68.86,
+  "vh": 70.6
+ },
+ "mcart-r1": {
+  "file": "mcart-r1.svg",
+  "vx": -38.68,
+  "vy": -36.84,
+  "vw": 68.86,
+  "vh": 70.6
+ },
+ "mcart-r2": {
+  "file": "mcart-r2.svg",
+  "vx": -30.18,
+  "vy": -36.84,
+  "vw": 68.86,
+  "vh": 70.6
+ },
+ "mcart-r3": {
+  "file": "mcart-r3.svg",
+  "vx": -38.68,
+  "vy": -36.84,
+  "vw": 68.86,
+  "vh": 70.6
+ },
+ "ushelf-r0": {
+  "file": "ushelf-r0.svg",
+  "vx": -30.52,
+  "vy": -64.39,
+  "vw": 86.54,
+  "vh": 106.64
+ },
+ "ushelf-r1": {
+  "file": "ushelf-r1.svg",
+  "vx": -56.02,
+  "vy": -64.39,
+  "vw": 86.54,
+  "vh": 106.64
+ },
+ "ushelf-r2": {
+  "file": "ushelf-r2.svg",
+  "vx": -30.52,
+  "vy": -64.39,
+  "vw": 86.54,
+  "vh": 106.64
+ },
+ "ushelf-r3": {
+  "file": "ushelf-r3.svg",
+  "vx": -56.02,
+  "vy": -64.39,
+  "vw": 86.54,
+  "vh": 106.64
+ },
+ "rug-r0": {
+  "file": "rug-r0.svg",
+  "vx": -89,
+  "vy": -4.24,
+  "vw": 212,
+  "vh": 110
+ },
+ "rug-r1": {
+  "file": "rug-r1.svg",
+  "vx": -123,
+  "vy": -4.24,
+  "vw": 212,
+  "vh": 110
+ },
+ "rug-r2": {
+  "file": "rug-r2.svg",
+  "vx": -89,
+  "vy": -4.24,
+  "vw": 212,
+  "vh": 110
+ },
+ "rug-r3": {
+  "file": "rug-r3.svg",
+  "vx": -123,
+  "vy": -4.24,
+  "vw": 212,
+  "vh": 110
+ },
+ "flamp-r0": {
+  "file": "flamp-r0.svg",
+  "vx": -27,
+  "vy": -53.8,
+  "vw": 54,
+  "vh": 73.1
+ },
+ "flamp-r1": {
+  "file": "flamp-r1.svg",
+  "vx": -27,
+  "vy": -53.8,
+  "vw": 54,
+  "vh": 73.1
+ },
+ "flamp-r2": {
+  "file": "flamp-r2.svg",
+  "vx": -27,
+  "vy": -53.8,
+  "vw": 54,
+  "vh": 73.1
+ },
+ "flamp-r3": {
+  "file": "flamp-r3.svg",
+  "vx": -27,
+  "vy": -53.8,
+  "vw": 54,
+  "vh": 73.1
+ },
+ "mirror-back": {
+  "file": "mirror-back.svg",
+  "vx": -5.7,
+  "vy": -66.05,
+  "vw": 40.3,
+  "vh": 86.55
+ },
+ "mirror-left": {
+  "file": "mirror-left.svg",
+  "vx": -34.6,
+  "vy": -66.05,
+  "vw": 40.3,
+  "vh": 86.55
+ },
+ "plant-r0": {
+  "file": "plant-r0.svg",
+  "vx": -19.64,
+  "vy": -23.07,
+  "vw": 39.28,
+  "vh": 44.92
+ },
+ "plant-r1": {
+  "file": "plant-r1.svg",
+  "vx": -19.64,
+  "vy": -23.07,
+  "vw": 39.28,
+  "vh": 44.92
+ },
+ "plant-r2": {
+  "file": "plant-r2.svg",
+  "vx": -19.64,
+  "vy": -23.07,
+  "vw": 39.28,
+  "vh": 44.92
+ },
+ "plant-r3": {
+  "file": "plant-r3.svg",
+  "vx": -19.64,
+  "vy": -23.07,
+  "vw": 39.28,
+  "vh": 44.92
+ },
+ "art-back": {
+  "file": "art-back.svg",
+  "vx": -5.7,
+  "vy": -25.25,
+  "vw": 45.4,
+  "vh": 48.3
+ },
+ "art-left": {
+  "file": "art-left.svg",
+  "vx": -39.7,
+  "vy": -25.25,
+  "vw": 45.4,
+  "vh": 48.3
+ },
+ "hamper-r0": {
+  "file": "hamper-r0.svg",
+  "vx": -29.5,
+  "vy": -28,
+  "vw": 59,
+  "vh": 57.5
+ },
+ "hamper-r1": {
+  "file": "hamper-r1.svg",
+  "vx": -29.5,
+  "vy": -28,
+  "vw": 59,
+  "vh": 57.5
+ },
+ "hamper-r2": {
+  "file": "hamper-r2.svg",
+  "vx": -29.5,
+  "vy": -28,
+  "vw": 59,
+  "vh": 57.5
+ },
+ "hamper-r3": {
+  "file": "hamper-r3.svg",
+  "vx": -29.5,
+  "vy": -28,
+  "vw": 59,
+  "vh": 57.5
+ },
+ "trash-r0": {
+  "file": "trash-r0.svg",
+  "vx": -21,
+  "vy": -19.6,
+  "vw": 42,
+  "vh": 40.6
+ },
+ "trash-r1": {
+  "file": "trash-r1.svg",
+  "vx": -21,
+  "vy": -19.6,
+  "vw": 42,
+  "vh": 40.6
+ },
+ "trash-r2": {
+  "file": "trash-r2.svg",
+  "vx": -21,
+  "vy": -19.6,
+  "vw": 42,
+  "vh": 40.6
+ },
+ "trash-r3": {
+  "file": "trash-r3.svg",
+  "vx": -21,
+  "vy": -19.6,
+  "vw": 42,
+  "vh": 40.6
+ },
+ "sidetable-r0": {
+  "file": "sidetable-r0.svg",
+  "vx": -31.2,
+  "vy": -26.45,
+  "vw": 62.4,
+  "vh": 53.91
+ },
+ "sidetable-r1": {
+  "file": "sidetable-r1.svg",
+  "vx": -31.2,
+  "vy": -26.45,
+  "vw": 62.4,
+  "vh": 53.91
+ },
+ "sidetable-r2": {
+  "file": "sidetable-r2.svg",
+  "vx": -31.2,
+  "vy": -26.45,
+  "vw": 62.4,
+  "vh": 53.91
+ },
+ "sidetable-r3": {
+  "file": "sidetable-r3.svg",
+  "vx": -31.2,
+  "vy": -26.45,
+  "vw": 62.4,
+  "vh": 53.91
+ }
+}

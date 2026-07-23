@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Layout Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;height:100%;background:#cfe6ee;font-family:'Nunito',sans-serif;color:#4a3222}
+a{color:#7c9a4d}a:hover{color:#5c7736}
+*{box-sizing:border-box}
+button{font-family:inherit;color:#4a3222}
+input,select{font-family:inherit;color:#4a3222}
+::selection{background:#f2d38a}
+</style>
+</helmet>
+<div style="height:100vh;display:flex;flex-direction:column;overflow:hidden">
+  <div style="display:flex;align-items:center;gap:16px;padding:10px 18px;background:#fdf6e9;border-bottom:3px solid #4a3222;flex-shrink:0">
+    <div>
+      <div style="font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;line-height:1.1">My Studio Planner</div>
+      <div style="font-size:12px;font-weight:700;color:#a9744b">12′ × 20′ studio · 3′ × 3′ alcove · 1 ft grid</div>
+    </div>
+    <div style="margin:0 auto"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="background:#9cbf6e;border:2px solid #4a3222;border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:0 2px 0 #4a3222;white-space:nowrap">{{ tally }}</div>
+      <button onClick="{{ clearLayout }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:999px;padding:6px 12px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222;white-space:nowrap" style-hover="background:#f3c1b4">Clear room</button>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <div style="width:274px;flex-shrink:0;background:#fdf6e9;border-right:3px solid #4a3222;overflow-y:auto;padding:12px 12px 20px 12px">
+      <div style="font-family:'Baloo 2',cursive;font-size:16px;font-weight:800">Furniture catalog</div>
+      <div style="font-size:11.5px;font-weight:700;color:#a9744b">Click an item to drop it in the room</div>
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+        <div style="margin-top:14px">
+          <div style="font-family:'Baloo 2',cursive;font-size:12px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#a9744b">{{ g.name }}</div>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+            <div onClick="{{ it.add }}" style="display:flex;align-items:center;gap:8px;padding:7px 9px;margin-top:5px;background:#fffdf5;border:2px solid #e8d9bd;border-radius:12px;cursor:pointer" style-hover="border-color:#4a3222;transform:translateY(-1px)">
+              <div style="{{ it.dot }}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:800;font-size:12.5px;line-height:1.2">{{ it.name }}</div>
+                <div style="font-size:11px;color:#a9744b;font-weight:700">{{ it.dims }}</div>
+              </div>
+              <sc-if value="{{ it.qty }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#f2d38a;border:1.5px solid #4a3222;border-radius:999px;font-size:10px;font-weight:800;padding:1px 6px">{{ it.qty }}</div>
+              </sc-if>
+              <div style="{{ it.priceStyle }}">{{ it.priceLabel }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+      <details style="margin-top:18px;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px">
+        <summary style="font-family:'Baloo 2',cursive;font-weight:800;font-size:13px;cursor:pointer">＋ Add custom item</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+          <input placeholder="Name" value="{{ fName }}" onChange="{{ setFName }}" style="grid-column:1/-1;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <input placeholder="Width (in)" value="{{ fW }}" onChange="{{ setFW }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <input placeholder="Depth (in)" value="{{ fD }}" onChange="{{ setFD }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <input placeholder="Height (in)" value="{{ fH }}" onChange="{{ setFH }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <input placeholder="Price $" value="{{ fPrice }}" onChange="{{ setFPrice }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <select value="{{ fMount }}" onChange="{{ setFMount }}" style="grid-column:1/-1;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+            <option value="floor">Floor item</option>
+            <option value="rug">Rug (furniture can sit on it)</option>
+            <option value="wall">Wall item</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <span style="font-size:11px;font-weight:800">Color</span>
+          <sc-for list="{{ swatches }}" as="s" hint-placeholder-count="5">
+            <div onClick="{{ s.pick }}" style="{{ s.style }}"></div>
+          </sc-for>
+        </div>
+        <button onClick="{{ addCustom }}" style="margin-top:10px;width:100%;background:#9cbf6e;border:2px solid #4a3222;border-radius:10px;padding:8px 10px;font-weight:800;font-size:12.5px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">Add to catalog</button>
+      </details>
+    </div>
+    <div style="flex:1;min-width:0;position:relative;background:linear-gradient(#c7e3ee,#dcedf3);user-select:none">
+      <div style="position:absolute;top:36px;left:8%;width:130px;height:34px;background:#ffffff;opacity:0.75;border-radius:999px"></div>
+      <div style="position:absolute;top:70px;left:14%;width:80px;height:24px;background:#ffffff;opacity:0.6;border-radius:999px"></div>
+      <div style="position:absolute;top:50px;right:10%;width:110px;height:30px;background:#ffffff;opacity:0.7;border-radius:999px"></div>
+      <div style="position:absolute;inset:20px;display:flex;align-items:center;justify-content:center">{{ scene }}</div>
+      <div style="position:absolute;top:12px;left:14px;background:#fffdf5;border:2px solid #4a3222;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:700;box-shadow:0 2px 0 #4a3222">Click the catalog to add · drag to move · R to rotate · Del to remove</div>
+      <sc-if value="{{ selWarn }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:50%;bottom:86px;transform:translateX(-50%);background:#f3c1b4;border:2px solid #c8442e;color:#7c2114;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:800">{{ selWarn }}</div>
+      </sc-if>
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#fffdf5;border:3px solid #4a3222;border-radius:16px;padding:8px 12px;box-shadow:0 3px 0 #4a3222">
+          <div style="flex-shrink:0">
+            <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:14px;line-height:1.1;white-space:nowrap">{{ selName }}</div>
+            <div style="font-size:11px;font-weight:700;color:#a9744b;white-space:nowrap">{{ selDims }}</div>
+          </div>
+          <button onClick="{{ rotateSel }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">⟳ Rotate</button>
+          <button onClick="{{ dupSel }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">⧉ Duplicate</button>
+          <button onClick="{{ delSel }}" style="background:#f3c1b4;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">✕ Remove</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;wallColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#fbf2e2&quot;,&quot;options&quot;:[&quot;#fbf2e2&quot;,&quot;#e9efdc&quot;,&quot;#f6e3de&quot;,&quot;#e6eef2&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;while dragging&quot;,&quot;options&quot;:[&quot;while dragging&quot;,&quot;always&quot;,&quot;never&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showDoorClearance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Room&quot;}}">
+class Component extends DCLogic {
+  state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor'}};
+  VB = [-275,-85,635,400];
+  SW = ['#9cbf6e','#d9a86c','#c9d8a0','#d98d63','#8fa8c8'];
+  ZONES = [{x:0,y:3.4,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
+  wr(wall){return wall==='back'?[0,17]:[3,15]}
+  DEFS = [
+    {id:'bed',g:'Sleeping',name:'Queen bed',w:5,d:6.7,h:2,price:0,owned:1,kind:'bed',c:'#9cbf6e'},
+    {id:'nstand',g:'Sleeping',name:'Nightstand',w:1.5,d:1.5,h:1.8,price:60,kind:'drawer',drawers:2,c:'#d9a86c'},
+    {id:'desk',g:'Work',name:'Desk',w:4,d:2,h:2.4,price:0,owned:1,kind:'table',c:'#c99a68'},
+    {id:'ochair',g:'Work',name:'Office chair',w:1.8,d:1.8,h:3,price:0,owned:1,kind:'chair',c:'#7e8f7a'},
+    {id:'dlamp',g:'Work',name:'Desk lamp',w:0.7,d:0.7,h:1.7,price:30,kind:'lamp',stack:1,c:'#f2d38a'},
+    {id:'sofa',g:'Living',name:'2-seat sofa',w:5,d:3,h:2.5,price:500,kind:'sofa',c:'#9cbf6e'},
+    {id:'ctable',g:'Living',name:'Coffee table',w:3.3,d:1.7,h:1.4,price:120,kind:'table',c:'#8b5e3c'},
+    {id:'achair',g:'Living',name:'Accent chair',w:2.5,d:2.5,h:2.6,price:150,kind:'sofa',arm:1,c:'#c9d8a0'},
+    {id:'console',g:'Living',name:'Media console',w:5,d:1.4,h:1.7,price:180,kind:'console',c:'#f0e3c8'},
+    {id:'tv',g:'Living',name:'55″ TV · wall',wall:1,w:4,h:2.3,z:3.2,price:350,kind:'tv'},
+    {id:'kallax',g:'Storage',name:'KALLAX 2×4',w:4.8,d:1.3,h:2.5,price:90,kind:'kallax',c:'#e6d9bd'},
+    {id:'dresser',g:'Storage',name:'3-drawer dresser',w:2.7,d:1.5,h:2.5,price:0,owned:1,kind:'drawer',drawers:3,c:'#d9a86c'},
+    {id:'wardrobe',g:'Storage',name:'Wardrobe',w:3,d:2,h:6,price:130,kind:'wardrobe',c:'#e6cfa3'},
+    {id:'shoerack',g:'Storage',name:'Shoe rack',w:2.7,d:1,h:1.6,price:40,kind:'shelf',shelves:2,c:'#7a5236'},
+    {id:'ottoman',g:'Storage',name:'Storage ottoman',w:2.5,d:1.3,h:1.4,price:70,kind:'ottoman',c:'#b98a5a'},
+    {id:'dtable',g:'Dining',name:'Round dining table',w:3,d:3,h:2.5,price:150,kind:'roundtable',c:'#c99a68'},
+    {id:'dchair',g:'Dining',name:'Dining chair',w:1.5,d:1.5,h:2.9,price:50,kind:'chair',c:'#a9744b'},
+    {id:'mcart',g:'Kitchen',name:'Microwave cart',w:2,d:1.5,h:3,price:80,kind:'cart',c:'#8b5e3c'},
+    {id:'ushelf',g:'Kitchen',name:'Utility shelving',w:3,d:1.5,h:5,price:60,kind:'shelf',shelves:4,c:'#6f5138'},
+    {id:'rug',g:'Decor',name:'Area rug 5×7',w:7,d:5,h:0,price:140,kind:'rug',c:'#9cbf6e'},
+    {id:'flamp',g:'Decor',name:'Floor lamp',w:1.2,d:1.2,h:5,price:45,kind:'lamp',c:'#f2d38a'},
+    {id:'mirror',g:'Decor',name:'Full-length mirror · wall',wall:1,w:1.7,h:5,z:0.3,price:60,kind:'mirror'},
+    {id:'plant',g:'Decor',name:'Potted plant',w:1.3,d:1.3,h:3,price:25,kind:'plant',c:'#7c9a4d'},
+    {id:'art',g:'Decor',name:'Wall art · wall',wall:1,w:2,h:1.6,z:4,price:30,kind:'art'},
+    {id:'hamper',g:'Misc',name:'Laundry hamper',w:1.5,d:1.5,h:2,price:0,owned:1,kind:'basket',c:'#e8dcc3'},
+    {id:'trash',g:'Misc',name:'Trash can',w:1,d:1,h:1.3,price:0,owned:1,kind:'basket',c:'#93a69a'},
+    {id:'sidetable',g:'Misc',name:'Side table',w:1.5,d:1.5,h:1.8,price:40,kind:'table',c:'#a9744b'}
+  ];
+  componentDidMount(){
+    try{const s=JSON.parse(localStorage.getItem('studio-sim-v1')||'null'); if(s&&s.layouts){
+      if(!s.v2){['A','B'].forEach(k=>{(s.layouts[k]||[]).forEach(i=>{ if(i.wall){ if(i.wall==='left')i.u=Math.min(i.u+3,14); else i.u=Math.min(i.u,16);} else if(i.y!=null){i.y=Math.min(i.y+3,14);} });});}
+      this.setState({layouts:s.layouts,custom:s.custom||[],active:s.active||'A'},()=>this.save());
+    }}catch(e){}
+    this._kd=(e)=>this.onKey(e); window.addEventListener('keydown',this._kd);
+    fetch('sprites/manifest.json').then(r=>r.ok?r.json():null).then(m=>{
+      if(!m)return;
+      return Promise.all(Object.keys(m).map(k=>fetch('sprites/'+m[k].file).then(r=>r.ok?r.text():null).then(t=>{
+        if(t)m[k].uri='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(t)));
+      }).catch(()=>{}))).then(()=>this.setState({sprites:m}));
+    }).catch(()=>{});
+  }
+  spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const key=d.wall?(d.id+'-'+(item.wall||'back')):(d.id+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
+  componentWillUnmount(){window.removeEventListener('keydown',this._kd); this.unbindDrag();}
+  save(){const {layouts,custom,active}=this.state; try{localStorage.setItem('studio-sim-v1',JSON.stringify({layouts,custom,active,v2:1}))}catch(e){}}
+  allDefs(){return this.DEFS.concat(this.state.custom)}
+  def(id){return this.allDefs().find(d=>d.id===id)}
+  L(){return this.state.layouts[this.state.active]}
+  isRug(d){return d.kind==='rug'}
+  fp(item,d){const r=item.rot||0; return r%2?{fx:d.d,fy:d.w}:{fx:d.w,fy:d.d}}
+  insideFloor(x,y,fx,fy){const e=0.001; if(x<-e||x+fx>20+e||y+fy>15+e)return false; if(y>=3-e)return true; return x>=17-e&&y>=-e}
+  fit(x,y,fx,fy){x=Math.max(0,Math.min(x,20-fx)); y=Math.max(0,Math.min(y,15-fy)); if(!this.insideFloor(x,y,fx,fy)){y=Math.max(y,3);} return [x,y]}
+  rInt(ax,ay,aw,ad,bx,by,bw,bd){const e=0.01; return ax+aw>bx+e&&bx+bw>ax+e&&ay+ad>by+e&&by+bd>ay+e}
+  inZone(x,y,fx,fy){return this.ZONES.some(z=>this.rInt(x,y,fx,fy,z.x,z.y,z.w,z.d))}
+  uid(){return 'i'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36)}
+  addItem(defId){
+    const d=this.def(defId); if(!d)return; let it;
+    if(d.wall){it={uid:this.uid(),defId,wall:'back',u:Math.max(0,Math.min(10,17-d.w)),z:d.z!=null?d.z:3};}
+    else{const n=this.L().length; let x=5+(n%4)*2, y=6+(Math.floor(n/4)%3)*2; const p=this.fit(x,y,d.w,d.d); it={uid:this.uid(),defId,x:p[0],y:p[1],rot:0};}
+    const layouts={...this.state.layouts,[this.state.active]:this.L().concat([it])};
+    this.setState({layouts,sel:it.uid,mode:'single'},()=>this.save());
+  }
+  update(uid,patch,cb){const items=this.L().map(i=>i.uid===uid?{...i,...patch}:i); const layouts={...this.state.layouts,[this.state.active]:items}; this.setState({layouts},cb);}
+  selItem(){return this.L().find(i=>i.uid===this.state.sel)}
+  rotateSel(){
+    const it=this.selItem(); if(!it)return; const d=this.def(it.defId);
+    if(d.wall){const wall=it.wall==='back'?'left':'back'; const R=this.wr(wall); this.update(it.uid,{wall,u:Math.max(R[0],Math.min(it.u,R[1]-d.w))},()=>this.save()); return;}
+    const rot=((it.rot||0)+1)%4; const fx=rot%2?d.d:d.w, fy=rot%2?d.w:d.d; const p=this.fit(it.x,it.y,fx,fy);
+    this.update(it.uid,{rot,x:p[0],y:p[1]},()=>this.save());
+  }
+  delSel(){const items=this.L().filter(i=>i.uid!==this.state.sel); const layouts={...this.state.layouts,[this.state.active]:items}; this.setState({layouts,sel:null},()=>this.save());}
+  dupSel(){
+    const it=this.selItem(); if(!it)return; const d=this.def(it.defId); const nit={...it,uid:this.uid()};
+    if(d.wall){const R=this.wr(it.wall); nit.u=Math.max(R[0],Math.min(it.u+1,R[1]-d.w));}
+    else{const f=this.fp(it,d); const p=this.fit(it.x+1,it.y+1,f.fx,f.fy); nit.x=p[0]; nit.y=p[1];}
+    const layouts={...this.state.layouts,[this.state.active]:this.L().concat([nit])};
+    this.setState({layouts,sel:nit.uid},()=>this.save());
+  }
+  clearLayout(){if(!window.confirm('Clear the room?'))return; const layouts={...this.state.layouts,[this.state.active]:[]}; this.setState({layouts,sel:null},()=>this.save());}
+  copyLayout(from,to){const items=this.state.layouts[from].map(i=>({...i,uid:this.uid()})); const layouts={...this.state.layouts,[to]:items}; this.setState({layouts},()=>this.save());}
+  onKey(e){
+    if(e.target&&e.target.closest&&e.target.closest('input,select,textarea'))return;
+    if(this.state.mode!=='single')return;
+    const k=e.key;
+    if(k==='Escape'){this.setState({sel:null});return;}
+    if(!this.state.sel)return;
+    if(k==='r'||k==='R'){e.preventDefault();this.rotateSel();}
+    else if(k==='Delete'||k==='Backspace'){e.preventDefault();this.delSel();}
+    else if(k.indexOf('Arrow')===0){
+      e.preventDefault(); const it=this.selItem(); if(!it)return; const d=this.def(it.defId);
+      if(d.wall){const du=k==='ArrowLeft'?-0.5:k==='ArrowRight'?0.5:0; const dz=k==='ArrowUp'?0.25:k==='ArrowDown'?-0.25:0; const R=this.wr(it.wall);
+        this.update(it.uid,{u:Math.max(R[0],Math.min(it.u+du,R[1]-d.w)),z:Math.max(0.2,Math.min((it.z||0)+dz,7.3-(d.h||2)))},()=>this.save());}
+      else{const dx=k==='ArrowRight'?1:k==='ArrowLeft'?-1:0, dy=k==='ArrowDown'?1:k==='ArrowUp'?-1:0; const f=this.fp(it,d); const p=this.fit(it.x+dx,it.y+dy,f.fx,f.fy); this.update(it.uid,{x:p[0],y:p[1]},()=>this.save());}
+    }
+  }
+  toXY(e){const el=this.svgEl; if(!el)return null; const r=el.getBoundingClientRect(); const [vx,vy,vw,vh]=this.VB; const sc=Math.min(r.width/vw,r.height/vh); if(!sc)return null;
+    return [(e.clientX-r.left-(r.width-vw*sc)/2)/sc+vx,(e.clientY-r.top-(r.height-vh*sc)/2)/sc+vy];}
+  toTile(e){const p=this.toXY(e); if(!p)return null; const a=p[0]/17,b=p[1]/8.5; return [(a+b)/2,(b-a)/2];}
+  toWallC(e,wall){const p=this.toXY(e); if(!p)return null; if(wall==='back'){const u=p[0]/17+3; return [u,((u+3)*8.5-p[1])/12];} const u=-p[0]/17; return [u,(u*8.5-p[1])/12];}
+  downItem(e,uid){
+    e.stopPropagation(); if(this.state.mode!=='single')return;
+    const it=this.L().find(i=>i.uid===uid); if(!it)return; const d=this.def(it.defId);
+    const drag={uid,wall:!!d.wall,start:{...it}};
+    if(d.wall){const c=this.toWallC(e,it.wall); if(!c)return; drag.g=c;}
+    else{const t=this.toTile(e); if(!t)return; drag.g=t;}
+    this._drag=drag; this._mv=(ev)=>this.dragMove(ev); this._up=()=>this.dragEnd();
+    window.addEventListener('pointermove',this._mv); window.addEventListener('pointerup',this._up);
+    this.setState({sel:uid,dragging:true});
+  }
+  unbindDrag(){if(this._mv){window.removeEventListener('pointermove',this._mv); window.removeEventListener('pointerup',this._up); this._mv=null; this._up=null;}}
+  dragMove(ev){
+    const dg=this._drag; if(!dg)return; const it=this.L().find(i=>i.uid===dg.uid); if(!it)return; const d=this.def(it.defId);
+    if(dg.wall){const c=this.toWallC(ev,it.wall); if(!c)return;
+      let u=dg.start.u+c[0]-dg.g[0], z=(dg.start.z||0)+c[1]-dg.g[1];
+      u=Math.round(u*2)/2; z=Math.round(z*4)/4; const R=this.wr(it.wall);
+      u=Math.max(R[0],Math.min(u,R[1]-d.w)); z=Math.max(0.2,Math.min(z,7.3-(d.h||2)));
+      if(u!==it.u||z!==it.z)this.update(it.uid,{u,z});
+    }else{const t=this.toTile(ev); if(!t)return;
+      let x=Math.round(dg.start.x+t[0]-dg.g[0]), y=Math.round(dg.start.y+t[1]-dg.g[1]);
+      const f=this.fp(it,d); const p=this.fit(x,y,f.fx,f.fy);
+      if(p[0]!==it.x||p[1]!==it.y)this.update(it.uid,{x:p[0],y:p[1]});}
+  }
+  dragEnd(){
+    const dg=this._drag; this._drag=null; this.unbindDrag();
+    if(!dg){this.setState({dragging:false}); return;}
+    const it=this.L().find(i=>i.uid===dg.uid); const d=it&&this.def(it.defId);
+    if(it&&d&&!d.wall&&!this.isRug(d)){const f=this.fp(it,d);
+      if(this.inZone(it.x,it.y,f.fx,f.fy)){this.update(dg.uid,{x:dg.start.x,y:dg.start.y},()=>{this.save();this.setState({dragging:false})}); return;}}
+    this.setState({dragging:false},()=>this.save());
+  }
+  S(x,y,z){return [(x-y)*17,(x+y)*8.5-(z||0)*12]}
+  sh(h,f){const n=parseInt(h.slice(1),16); const c=(v)=>Math.max(0,Math.min(255,Math.round(v*f))); const t=(c(n>>16&255)<<16)|(c(n>>8&255)<<8)|c(n&255); return '#'+t.toString(16).padStart(6,'0');}
+  pg(pts,fill,o){this._k++; return React.createElement('polygon',Object.assign({key:'p'+this._k,points:pts.map(p=>{const s=this.S(p[0],p[1],p[2]||0); return s[0].toFixed(1)+','+s[1].toFixed(1)}).join(' '),fill,stroke:'#4a3222',strokeWidth:1.3,strokeLinejoin:'round'},o));}
+  rawPg(points,fill,o){this._k++; return React.createElement('polygon',Object.assign({key:'rp'+this._k,points,fill,stroke:'#4a3222',strokeWidth:1.3,strokeLinejoin:'round'},o));}
+  ln(p1,p2,o){const a=this.S(p1[0],p1[1],p1[2]||0), b=this.S(p2[0],p2[1],p2[2]||0); this._k++; return React.createElement('line',Object.assign({key:'l'+this._k,x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#4a3222',strokeWidth:1.2},o));}
+  el2(cx,cy,z,r,fill,o){const s=this.S(cx,cy,z); this._k++; return React.createElement('ellipse',Object.assign({key:'e'+this._k,cx:s[0],cy:s[1],rx:r*24,ry:r*12,fill,stroke:'#4a3222',strokeWidth:1.3},o));}
+  circ(x,y,z,r,fill,o){const s=this.S(x,y,z); this._k++; return React.createElement('circle',Object.assign({key:'c'+this._k,cx:s[0],cy:s[1],r,fill,stroke:'#4a3222',strokeWidth:1},o));}
+  boxOut(out,x,y,w,d,z,h,c){
+    out.push(this.pg([[x+w,y,z+h],[x+w,y+d,z+h],[x+w,y+d,z],[x+w,y,z]],this.sh(c,0.68)));
+    out.push(this.pg([[x,y+d,z+h],[x+w,y+d,z+h],[x+w,y+d,z],[x,y+d,z]],this.sh(c,0.85)));
+    out.push(this.pg([[x,y,z+h],[x+w,y,z+h],[x+w,y+d,z+h],[x,y+d,z+h]],this.sh(c,1.1)));
+  }
+  drawFloorItem(item,d,fl,interactive){
+    const out=[]; const r=item.rot||0, w=d.w, dd=d.d; const f=this.fp(item,d), fx=f.fx, fy=f.fy; const X=item.x, Y=item.y;
+    const map=(a,b)=>{if(r===0)return [X+a,Y+b]; if(r===1)return [X+b,Y+a]; if(r===2)return [X+w-a,Y+dd-b]; return [X+dd-b,Y+w-a];};
+    const parts=[];
+    const B=(a,b,aw,bd,z,h,c)=>{const p1=map(a,b),p2=map(a+aw,b+bd); parts.push({x:Math.min(p1[0],p2[0]),y:Math.min(p1[1],p2[1]),w:Math.abs(p2[0]-p1[0]),d:Math.abs(p2[1]-p1[1]),z,h,c});};
+    const flush=()=>{parts.sort((m,n)=>(m.x+m.y)-(n.x+n.y)||m.z-n.z); parts.forEach(p=>this.boxOut(out,p.x,p.y,p.w,p.d,p.z,p.h,p.c)); parts.length=0;};
+    const FQ=(a1,z1,a2,z2,fill)=>{if(r>=2)return; let pts; if(r===0){const yF=Y+dd; pts=[[X+a1,yF,z1],[X+a2,yF,z1],[X+a2,yF,z2],[X+a1,yF,z2]];}else{const xF=X+dd; pts=[[xF,Y+a1,z1],[xF,Y+a2,z1],[xF,Y+a2,z2],[xF,Y+a1,z2]];} out.push(this.pg(pts,fill,{strokeWidth:1}));};
+    const KN=(a,z)=>{if(r>=2)return; const p=r===0?[X+a,Y+dd]:[X+dd,Y+a]; out.push(this.circ(p[0],p[1],z,2.2,'#e9c46a'));};
+    const cx=X+fx/2, cy=Y+fy/2; const H=d.h||1.5; const C=d.c||'#d9a86c';
+    if(d.kind!=='rug')out.push(this.pg([[X-0.1,Y-0.1],[X+fx+0.1,Y-0.1],[X+fx+0.1,Y+fy+0.1],[X-0.1,Y+fy+0.1]],'rgba(74,50,34,0.12)',{stroke:'none'}));
+    if(fl.sel)out.push(this.pg([[X-0.25,Y-0.25],[X+fx+0.25,Y-0.25],[X+fx+0.25,Y+fy+0.25],[X-0.25,Y+fy+0.25]],'rgba(224,138,94,0.12)',{stroke:'#e0793e',strokeDasharray:'6 4',strokeWidth:2}));
+    const sp=this.spriteFor(d,item);
+    if(sp){const o=this.S(X,Y,0); this._k++;
+      out.push(React.createElement('image',{key:'img'+this._k,href:sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh}));
+    }else switch(d.kind){
+      case 'bed':
+        B(0,0,w,0.35,0,2.7,'#8b5e3c'); B(0,0.2,w,dd-0.2,0,0.85,'#a9744b');
+        B(0.15,0.4,w-0.3,dd-0.55,0.85,0.6,'#f7efdd'); B(0.15,dd*0.45,w-0.3,dd-dd*0.45-0.2,1.45,0.28,C);
+        B(0.4,0.6,(w-1.1)/2,1.1,1.45,0.42,'#fffdf6'); B(w-0.4-(w-1.1)/2,0.6,(w-1.1)/2,1.1,1.45,0.42,'#fffdf6');
+        flush(); break;
+      case 'sofa':{
+        B(0,0,w,0.6,0,2.4,C); B(0,0,0.55,dd,0,1.75,C); B(w-0.55,0,0.55,dd,0,1.75,C);
+        B(0.55,0.55,w-1.1,dd-0.75,0,0.9,C);
+        const n=d.arm?1:2, cw=(w-1.2)/n;
+        for(let i=0;i<n;i++)B(0.6+i*cw,0.6,cw-0.08,dd-0.9,0.9,0.55,this.sh(C,1.14));
+        flush(); break;}
+      case 'chair':{
+        const lg='#6f5138';
+        [[0.08,0.08],[w-0.22,0.08],[0.08,dd-0.22],[w-0.22,dd-0.22]].forEach(p=>B(p[0],p[1],0.14,0.14,0,1.15,lg));
+        B(0,0,w,dd,1.15,0.3,C); B(0,0,w,0.22,1.45,(d.h||2.8)-1.45,C);
+        flush(); break;}
+      case 'table':{
+        const lc=this.sh(C,0.72);
+        [[0.12,0.12],[w-0.28,0.12],[0.12,dd-0.28],[w-0.28,dd-0.28]].forEach(p=>B(p[0],p[1],0.16,0.16,0,H-0.22,lc));
+        B(-0.05,-0.05,w+0.1,dd+0.1,H-0.22,0.22,C);
+        flush(); break;}
+      case 'roundtable':
+        out.push(this.el2(cx,cy,0.03,0.62,this.sh(C,0.7)));
+        B(w/2-0.3,dd/2-0.3,0.6,0.6,0,H-0.2,this.sh(C,0.75)); flush();
+        out.push(this.el2(cx,cy,H-0.16,w/2,this.sh(C,0.8)));
+        out.push(this.el2(cx,cy,H,w/2,C));
+        break;
+      case 'console':
+        [[0.1,0.1],[w-0.25,0.1],[0.1,dd-0.25],[w-0.25,dd-0.25]].forEach(p=>B(p[0],p[1],0.15,0.15,0,0.4,'#6f5138'));
+        B(0,0,w,dd,0.4,H-0.4,C); flush();
+        FQ(0.15,0.6,w/2-0.05,H-0.15,this.sh(C,1.06)); FQ(w/2+0.05,0.6,w-0.15,H-0.15,this.sh(C,1.06));
+        KN(w/2-0.25,H/2+0.15); KN(w/2+0.25,H/2+0.15);
+        break;
+      case 'kallax':{
+        B(0,0,w,dd,0,H,C); flush();
+        const m=0.14,gap=0.09,cw2=(w-2*m-3*gap)/4,ch2=(H-2*m-gap)/2;
+        for(let ri=0;ri<2;ri++)for(let ci=0;ci<4;ci++){const a1=m+ci*(cw2+gap),z1=m+ri*(ch2+gap); FQ(a1,z1,a1+cw2,z1+ch2,'#6b4a32');}
+        break;}
+      case 'drawer':{
+        const n=d.drawers||3;
+        B(0,0,w,dd,0.18,H-0.18,C); flush();
+        const bh=(H-0.42-0.1*(n-1))/n;
+        for(let i=0;i<n;i++){const z1=0.3+i*(bh+0.1); FQ(0.12,z1,w-0.12,z1+bh,this.sh(C,1.1)); KN(w/2,z1+bh/2);}
+        break;}
+      case 'wardrobe':
+        B(0,0,w,dd,0,H,C); flush();
+        FQ(0.12,0.14,w/2-0.03,H-0.14,this.sh(C,1.08)); FQ(w/2+0.03,0.14,w-0.12,H-0.14,this.sh(C,1.08));
+        KN(w/2-0.18,H/2); KN(w/2+0.18,H/2);
+        break;
+      case 'shelf':{
+        const n=d.shelves||3;
+        [[0,0],[w-0.14,0],[0,dd-0.14],[w-0.14,dd-0.14]].forEach(p=>B(p[0],p[1],0.14,0.14,0,H,this.sh(C,0.8)));
+        const kn=['#d98d63','#9cbf6e','#e9c46a'];
+        for(let i=0;i<n;i++){const z=0.15+i*((H-0.3)/Math.max(1,n-1)); B(-0.03,-0.03,w+0.06,dd+0.06,z,0.14,C);
+          if(i<n-1)B(0.25+((i*0.55)%Math.max(0.3,w-1.1)),0.25,0.55,Math.max(0.3,dd-0.5),z+0.14,0.45,kn[i%3]);}
+        flush(); break;}
+      case 'cart':
+        [[0,0],[w-0.12,0],[0,dd-0.12],[w-0.12,dd-0.12]].forEach(p=>B(p[0],p[1],0.12,0.12,0,H-1.1,this.sh(C,0.8)));
+        B(-0.02,-0.02,w+0.04,dd+0.04,0.2,0.12,C); B(-0.02,-0.02,w+0.04,dd+0.04,H-1.24,0.12,C);
+        B(0.08,0.15,w-0.16,dd-0.3,H-1.1,1,'#f4efe4'); flush();
+        FQ(0.2,H-0.95,w-0.55,H-0.3,'#4a5560'); KN(w-0.35,H-0.62);
+        break;
+      case 'ottoman':
+        B(0,0,w,dd,0,H,C); flush();
+        out.push(this.circ(cx,cy,H,2,this.sh(C,0.6)));
+        break;
+      case 'rug':
+        out.push(this.pg([[X,Y,0.02],[X+fx,Y,0.02],[X+fx,Y+fy,0.02],[X,Y+fy,0.02]],C,{strokeWidth:1.6}));
+        out.push(this.pg([[X+0.35,Y+0.35,0.02],[X+fx-0.35,Y+0.35,0.02],[X+fx-0.35,Y+fy-0.35,0.02],[X+0.35,Y+fy-0.35,0.02]],'none',{stroke:'#fdf6e9',strokeWidth:2}));
+        break;
+      case 'lamp':{
+        B(w/2-0.3,dd/2-0.3,0.6,0.6,0,0.14,'#6f5138'); flush();
+        const s0=this.S(cx,cy,0); const yT=this.S(cx,cy,H)[1], yB=this.S(cx,cy,H-0.8)[1];
+        out.push(this.ln([cx,cy,0.14],[cx,cy,H-0.75],{stroke:'#6f5138',strokeWidth:2.5}));
+        const ht=4+2*H, hb=8+3*H;
+        out.push(this.rawPg((s0[0]-ht)+','+yT+' '+(s0[0]+ht)+','+yT+' '+(s0[0]+hb)+','+yB+' '+(s0[0]-hb)+','+yB,d.c||'#f2d38a'));
+        break;}
+      case 'plant':
+        B(w/2-0.4,dd/2-0.4,0.8,0.8,0,0.65,'#c67b52'); B(w/2-0.46,dd/2-0.46,0.92,0.92,0.65,0.16,'#d98d63'); flush();
+        out.push(this.el2(cx,cy,1.15,0.62,'#7c9a4d')); out.push(this.el2(cx,cy,1.65,0.5,'#8fb35e')); out.push(this.el2(cx,cy,2.15,0.36,'#a5c46f'));
+        break;
+      case 'basket':
+        B(0,0,w,dd,0,H,C); flush();
+        FQ(0.1,H*0.3,w-0.1,H*0.38,this.sh(C,0.85)); FQ(0.1,H*0.6,w-0.1,H*0.68,this.sh(C,0.85));
+        break;
+      default:
+        B(0,0,w,dd,0,H,C); flush();
+    }
+    if(fl.red||fl.warn)out.push(this.pg([[X,Y],[X+fx,Y],[X+fx,Y+fy],[X,Y+fy]],'rgba(214,72,54,'+(fl.warn?0.35:0.22)+')',{stroke:'#c8442e',strokeDasharray:'5 4',strokeWidth:1.6}));
+    return React.createElement('g',{key:item.uid,onPointerDown:interactive?(e)=>this.downItem(e,item.uid):undefined,style:interactive?{cursor:'grab'}:undefined},[React.createElement('title',{key:'t'},d.name)].concat(out));
+  }
+  drawWallItem(item,d,fl,interactive){
+    const wall=item.wall||'back', u=item.u, z=item.z!=null?item.z:(d.z!=null?d.z:3), w=d.w, h=d.h||2;
+    const WP=(uu,zz)=>wall==='back'?[uu,3,zz]:[0,uu,zz];
+    const WQ=(u1,z1,u2,z2,fill,o)=>this.pg([WP(u1,z2),WP(u2,z2),WP(u2,z1),WP(u1,z1)],fill,o);
+    const out=[];
+    const sp=this.spriteFor(d,item);
+    if(sp){const o=wall==='back'?this.S(u,3,z):this.S(0,u,z); this._k++;
+      out.push(React.createElement('image',{key:'img'+this._k,href:sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh}));
+    }else if(d.kind==='tv'){
+      out.push(WQ(u-0.06,z-0.06,u+w+0.06,z+h+0.06,'#3d3229'));
+      out.push(WQ(u+0.08,z+0.08,u+w-0.08,z+h-0.08,'#31424b',{strokeWidth:1}));
+      out.push(this.ln(WP(u+0.35,z+h-0.35),WP(u+0.95,z+h-0.95),{stroke:'rgba(255,255,255,0.4)',strokeWidth:2}));
+    }else if(d.kind==='mirror'){
+      out.push(WQ(u-0.1,z-0.1,u+w+0.1,z+h+0.1,'#a9744b'));
+      out.push(WQ(u+0.06,z+0.06,u+w-0.06,z+h-0.06,'#d8edf2',{strokeWidth:1}));
+      out.push(this.ln(WP(u+0.3,z+h-0.4),WP(u+w-0.3,z+0.4),{stroke:'rgba(255,255,255,0.6)',strokeWidth:2.5}));
+    }else{
+      out.push(WQ(u-0.1,z-0.1,u+w+0.1,z+h+0.1,'#8b5e3c'));
+      out.push(WQ(u+0.06,z+0.06,u+w-0.06,z+h-0.06,'#fdf6e9',{strokeWidth:1}));
+      out.push(WQ(u+0.18,z+0.18,u+w-0.18,z+h-0.18,d.c||'#9cbf6e',{strokeWidth:1}));
+      const s=this.S.apply(this,WP(u+w/2,z+h/2)); this._k++;
+      out.push(React.createElement('circle',{key:'sun'+this._k,cx:s[0],cy:s[1],r:Math.min(w,h)*6,fill:'#e9c46a',stroke:'#4a3222',strokeWidth:1}));
+    }
+    if(fl.sel)out.push(WQ(u-0.2,z-0.2,u+w+0.2,z+h+0.2,'rgba(224,138,94,0.1)',{stroke:'#e0793e',strokeDasharray:'6 4',strokeWidth:2}));
+    return React.createElement('g',{key:item.uid,onPointerDown:interactive?(e)=>this.downItem(e,item.uid):undefined,style:interactive?{cursor:'grab'}:undefined},[React.createElement('title',{key:'t'},d.name)].concat(out));
+  }
+  makeScene(key,interactive){
+    this._k=0;
+    const st=this.state, layout=st.layouts[key]||[];
+    const wallC=this.props.wallColor||'#fbf2e2';
+    const els=[];
+    els.push(this.pg([[20,0,7.5],[20,15,7.5],[20,15,0],[20,0,0]],'#f6ead6'));
+    els.push(this.pg([[0,3,7.5],[0,15,7.5],[0,15,0],[0,3,0]],this.sh(wallC,0.93)));
+    els.push(this.pg([[0,3,7.5],[17,3,7.5],[17,3,0],[0,3,0]],wallC));
+    els.push(this.pg([[17,0,7.5],[17,3,7.5],[17,3,0],[17,0,0]],this.sh(wallC,0.9)));
+    els.push(this.pg([[17,0,7.5],[20,0,7.5],[20,0,0],[17,0,0]],wallC));
+    els.push(this.pg([[0,2.7,7.5],[17,2.7,7.5],[17,3,7.5],[0,3,7.5]],'#fffdf5'));
+    els.push(this.pg([[-0.3,3,7.5],[-0.3,15,7.5],[0,15,7.5],[0,3,7.5]],'#fffdf5'));
+    els.push(this.pg([[16.7,0,7.5],[16.7,3,7.5],[17,3,7.5],[17,0,7.5]],'#fffdf5'));
+    els.push(this.pg([[17,-0.3,7.5],[20,-0.3,7.5],[20,0,7.5],[17,0,7.5]],'#fffdf5'));
+    els.push(this.pg([[0,3,0.26],[17,3,0.26],[17,3,0],[0,3,0]],'#fff6e6',{strokeWidth:0.8}));
+    els.push(this.pg([[0,3,0.26],[0,15,0.26],[0,15,0],[0,3,0]],'#f5e9d2',{strokeWidth:0.8}));
+    els.push(this.pg([[17,0,0.26],[17,3,0.26],[17,3,0],[17,0,0]],'#f5e9d2',{strokeWidth:0.8}));
+    els.push(this.pg([[17,0,0.26],[20,0,0.26],[20,0,0],[17,0,0]],'#fff6e6',{strokeWidth:0.8}));
+    els.push(this.pg([[0,10,6.2],[0,13.6,6.2],[0,13.6,2.5],[0,10,2.5]],'#fffdf5'));
+    els.push(this.pg([[0,10.16,6.04],[0,13.44,6.04],[0,13.44,2.66],[0,10.16,2.66]],'#cfe9f2',{strokeWidth:1}));
+    els.push(this.ln([0,11.8,2.66],[0,11.8,6.04],{stroke:'#fffdf5',strokeWidth:3}));
+    els.push(this.ln([0,10.16,4.35],[0,13.44,4.35],{stroke:'#fffdf5',strokeWidth:2.5}));
+    els.push(this.pg([[0,6.4,6.2],[0,9.6,6.2],[0,9.6,2.5],[0,6.4,2.5]],'#fffdf5'));
+    els.push(this.pg([[0,6.56,6.04],[0,9.44,6.04],[0,9.44,2.66],[0,6.56,2.66]],'#cfe9f2',{strokeWidth:1}));
+    els.push(this.ln([0,8,2.66],[0,8,6.04],{stroke:'#fffdf5',strokeWidth:3}));
+    els.push(this.ln([0,6.56,4.35],[0,9.44,4.35],{stroke:'#fffdf5',strokeWidth:2.5}));
+    els.push(this.pg([[0,3.28,6.9],[0,6.02,6.9],[0,6.02,0],[0,3.28,0]],'#e8d9bd',{strokeWidth:1}));
+    els.push(this.pg([[0,3.4,6.75],[0,5.9,6.75],[0,5.9,0],[0,3.4,0]],'#fffdf5'));
+    els.push(this.pg([[0,3.7,6.2],[0,5.6,6.2],[0,5.6,0.7],[0,3.7,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
+    els.push(this.circ(0,3.75,3.4,2.6,'#e9c46a'));
+    els.push(this.pg([[0.58,3,6.9],[3.32,3,6.9],[3.32,3,0],[0.58,3,0]],'#e8d9bd',{strokeWidth:1}));
+    els.push(this.pg([[0.7,3,6.75],[3.2,3,6.75],[3.2,3,0],[0.7,3,0]],'#fffdf5'));
+    els.push(this.pg([[1,3,6.2],[2.9,3,6.2],[2.9,3,0.7],[1,3,0.7]],'none',{stroke:'#e8d9bd',strokeWidth:1}));
+    els.push(this.circ(1.5,3,3.4,2.6,'#e9c46a'));
+    const floorPts=[[0,3,0],[17,3,0],[17,0,0],[20,0,0],[20,15,0],[0,15,0]];
+    els.push(this.pg(floorPts,'#e9b878',{strokeWidth:2}));
+    const clipId='fc'+key;
+    els.push(React.createElement('clipPath',{key:'cp',id:clipId},React.createElement('polygon',{points:floorPts.map(p=>{const s=this.S(p[0],p[1],0);return s[0]+','+s[1]}).join(' ')})));
+    const planks=[];
+    for(let y=1;y<15;y++)planks.push(this.ln([0,y,0],[20,y,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));
+    for(let y=0;y<15;y++)for(let k=0;k<3;k++){const xx=((y*5+k*7)%18)+1.2; planks.push(this.ln([xx,y,0],[xx,y+1,0],{stroke:'#d39c60',strokeWidth:1,opacity:0.85}));}
+    els.push(React.createElement('g',{key:'planks',clipPath:'url(#'+clipId+')'},planks));
+    els.push(this.pg([[0,15,0],[20,15,0],[20,15,-0.32],[0,15,-0.32]],'#cf9a58'));
+    els.push(this.pg([[20,0,0],[20,15,0],[20,15,-0.32],[20,0,-0.32]],'#b9834a'));
+    if(this.props.showDoorClearance!==false)this.ZONES.forEach(zn=>{
+      els.push(this.pg([[zn.x,zn.y,0.01],[zn.x+zn.w,zn.y,0.01],[zn.x+zn.w,zn.y+zn.d,0.01],[zn.x,zn.y+zn.d,0.01]],'rgba(233,150,110,0.2)',{stroke:'#d98d63',strokeDasharray:'4 3',strokeWidth:1.2}));
+    });
+    const defOf=(i)=>this.def(i.defId);
+    layout.filter(i=>{const d=defOf(i); return d&&d.wall}).forEach(i=>{
+      els.push(this.drawWallItem(i,defOf(i),{sel:interactive&&st.sel===i.uid},interactive));
+    });
+    const gm=this.props.showGrid||'while dragging';
+    if(gm==='always'||(gm==='while dragging'&&st.dragging&&interactive)){
+      const gl=[];
+      for(let x=1;x<20;x++)gl.push(this.ln([x,0,0],[x,15,0],{stroke:'rgba(122,82,54,0.25)',strokeWidth:0.7}));
+      for(let y=1;y<15;y++)gl.push(this.ln([0,y,0],[20,y,0],{stroke:'rgba(122,82,54,0.25)',strokeWidth:0.7}));
+      els.push(React.createElement('g',{key:'grid',clipPath:'url(#'+clipId+')'},gl));
+    }
+    const floorItems=layout.filter(i=>{const d=defOf(i); return d&&!d.wall});
+    const rugs=floorItems.filter(i=>this.isRug(defOf(i)));
+    const solids=floorItems.filter(i=>!this.isRug(defOf(i)));
+    const red={}, warn={};
+    const hard=solids.filter(i=>!defOf(i).stack);
+    for(let a=0;a<hard.length;a++)for(let b=a+1;b<hard.length;b++){
+      const ia=hard[a], ib=hard[b], fa=this.fp(ia,defOf(ia)), fb=this.fp(ib,defOf(ib));
+      if(this.rInt(ia.x,ia.y,fa.fx,fa.fy,ib.x,ib.y,fb.fx,fb.fy)){red[ia.uid]=1; red[ib.uid]=1;}
+    }
+    solids.forEach(i=>{const ff=this.fp(i,defOf(i)); if(this.inZone(i.x,i.y,ff.fx,ff.fy))warn[i.uid]=1;});
+    const skey=(i)=>{const ff=this.fp(i,defOf(i)); return i.x+i.y+(ff.fx+ff.fy)/2};
+    rugs.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid},interactive)));
+    solids.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid,red:red[i.uid],warn:warn[i.uid]},interactive)));
+    return React.createElement('svg',{
+      key:'svg'+key, viewBox:this.VB.join(' '),
+      style:{width:'100%',height:'100%',display:'block',touchAction:'none'},
+      ref:interactive?(n)=>{this.svgEl=n}:undefined,
+      onPointerDown:interactive?()=>this.setState({sel:null}):undefined
+    },els);
+  }
+  fmt(v){const s=Math.round(v*10)/10; return s%1?s.toFixed(1):String(s)}
+  tallyOf(k){const items=this.state.layouts[k]||[]; let n=0,t=0; items.forEach(i=>{const d=this.def(i.defId); if(d&&d.price>0){n++;t+=d.price}}); return n?n+' to buy · $'+t:'All owned · $0';}
+  addCustom(){
+    const f=this.state.form; const wIn=parseFloat(f.w), dIn=parseFloat(f.d), hIn=parseFloat(f.h);
+    const isWall=f.mount==='wall', isRugM=f.mount==='rug';
+    if(!(wIn>0)){window.alert('Enter a width in inches'); return;}
+    if(!isWall&&!(dIn>0)){window.alert('Enter a depth in inches'); return;}
+    const q=(v)=>Math.max(0.25,Math.round(v/12*4)/4);
+    const def={id:'c'+Date.now().toString(36),g:'Custom',name:(f.name||'').trim()||'Custom item',
+      w:q(wIn), d:isWall?0.3:q(dIn), h:hIn>0?q(hIn):(isRugM?0:2), z:3,
+      price:parseFloat(f.price)||0, c:this.SW[f.c], kind:isRugM?'rug':(isWall?'customwall':'custom'), wall:isWall?1:0};
+    this.setState({custom:this.state.custom.concat([def]),form:{...f,name:''}},()=>{this.save(); this.addItem(def.id);});
+  }
+  renderVals(){
+    const st=this.state;
+
+    const counts={}; (st.layouts[st.active]||[]).forEach(i=>{counts[i.defId]=(counts[i.defId]||0)+1});
+    const GORDER=['Sleeping','Work','Living','Storage','Dining','Kitchen','Decor','Misc','Custom'];
+    const defs=this.allDefs();
+    const groups=GORDER.map(name=>({name,items:defs.filter(d=>d.g===name).map(d=>{
+      const owned=!!d.owned||(!d.price&&d.g!=='Custom');
+      return {
+        name:d.name,
+        dims:d.wall?this.fmt(d.w)+'′ wide':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′',
+        priceLabel:d.owned?'Owned':(d.price>0?'$'+d.price:'$0'),
+        priceStyle:{fontSize:'11px',fontWeight:800,color:d.owned?'#7c9a4d':'#4a3222',flexShrink:0},
+        dot:{width:'12px',height:'12px',borderRadius:'50%',background:d.c||'#8fa8c8',border:'2px solid #4a3222',flexShrink:0},
+        qty:counts[d.id]?'×'+counts[d.id]:'',
+        add:()=>this.addItem(d.id)
+      };
+    })})).filter(g=>g.items.length);
+    const it=this.selItem();
+    const d=it?this.def(it.defId):null;
+    let selName='',selDims='',selWarn='';
+    if(it&&d){
+      selName=d.name;
+      selDims=(d.wall?this.fmt(d.w)+'′ × '+this.fmt(d.h)+'′ on wall':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′')+(d.price>0?' · $'+d.price:' · owned');
+      if(!d.wall&&!this.isRug(d)){const ff=this.fp(it,d); if(this.inZone(it.x,it.y,ff.fx,ff.fy))selWarn='In the door clearance — it will snap back when dropped';}
+    }
+    const form=st.form;
+    const swatches=this.SW.map((c,i)=>({
+      pick:()=>this.setState({form:{...this.state.form,c:i}}),
+      style:{width:'20px',height:'20px',borderRadius:'50%',background:c,cursor:'pointer',border:i===form.c?'3px solid #4a3222':'2px solid #c9b797',transform:i===form.c?'scale(1.15)':'none'}
+    }));
+    const setF=(k)=>(e)=>this.setState({form:{...this.state.form,[k]:e.target.value}});
+    return {
+      scene:this.makeScene(st.active,true),
+      groups,
+      tally:this.tallyOf(st.active),
+      clearLayout:()=>this.clearLayout(),
+      hasSel:!!(it&&d), selName, selDims, selWarn,
+      rotateSel:()=>this.rotateSel(), dupSel:()=>this.dupSel(), delSel:()=>this.delSel(),
+      fName:form.name, setFName:setF('name'),
+      fW:form.w, setFW:setF('w'), fD:form.d, setFD:setF('d'), fH:form.h, setFH:setF('h'),
+      fPrice:form.price, setFPrice:setF('price'),
+      fMount:form.mount, setFMount:setF('mount'),
+      swatches, addCustom:()=>this.addCustom()
+    };
+  }
+}
+</script>
+</body>
+</html>

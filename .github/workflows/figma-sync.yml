@@ -1,0 +1,29 @@
+name: Sync sprites from Figma
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 6 * * *'   # nightly
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Pull sprites from Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: node scripts/figma-pull.mjs
+      - name: Commit changes
+        run: |
+          git config user.name "figma-sync-bot"
+          git config user.email "actions@github.com"
+          git add sprites/
+          git diff --cached --quiet || git commit -m "Sync sprites from Figma"
+          git push
