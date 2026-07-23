@@ -30,7 +30,7 @@ input,select{font-family:inherit;color:#4a3222}
     </div>
     <div style="margin:0 auto"></div>
     <div style="display:flex;align-items:center;gap:10px">
-      <div style="background:#9cbf6e;border:2px solid #4a3222;border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;box-shadow:0 2px 0 #4a3222;white-space:nowrap">{{ tally }}</div>
+      <button onClick="{{ openReceipt }}" style="display:flex;align-items:center;gap:6px;background:#9cbf6e;border:2px solid #4a3222;border-radius:999px;padding:7px 15px;font-weight:800;font-size:13px;box-shadow:0 2px 0 #4a3222;white-space:nowrap;cursor:pointer" style-hover="background:#8bb35d;transform:translateY(-1px)">{{ tally }} <span style="font-size:15px">›</span></button>
       <button onClick="{{ clearLayout }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:999px;padding:6px 12px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222;white-space:nowrap" style-hover="background:#f3c1b4">Clear room</button>
     </div>
   </div>
@@ -40,20 +40,30 @@ input,select{font-family:inherit;color:#4a3222}
       <div style="font-size:11.5px;font-weight:700;color:#a9744b">Click an item to drop it in the room</div>
       <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
         <div style="margin-top:14px">
-          <div style="font-family:'Baloo 2',cursive;font-size:12px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#a9744b">{{ g.name }}</div>
+          <div onClick="{{ g.toggle }}" style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none" style-hover="opacity:0.7">
+            <span style="font-size:20px;line-height:1;color:#a9744b;width:16px;text-align:center">{{ g.chevron }}</span>
+            <div style="font-family:'Baloo 2',cursive;font-size:12px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#a9744b">{{ g.name }}</div>
+          </div>
+          <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
-            <div onClick="{{ it.add }}" style="display:flex;align-items:center;gap:8px;padding:7px 9px;margin-top:5px;background:#fffdf5;border:2px solid #e8d9bd;border-radius:12px;cursor:pointer" style-hover="border-color:#4a3222;transform:translateY(-1px)">
+            <div onClick="{{ it.add }}" onMouseEnter="{{ it.rowEnter }}" onMouseLeave="{{ it.rowLeave }}" style="{{ it.rowStyle }}">
+              <sc-if value="{{ it.qty }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ it.removeOne }}" onMouseEnter="{{ it.badgeEnter }}" onMouseLeave="{{ it.badgeLeave }}" title="Remove one from the room" style="{{ it.badgeStyle }}">{{ it.badgeLabel }}</button>
+              </sc-if>
               <div style="{{ it.dot }}"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-weight:800;font-size:12.5px;line-height:1.2">{{ it.name }}</div>
                 <div style="font-size:11px;color:#a9744b;font-weight:700">{{ it.dims }}</div>
               </div>
-              <sc-if value="{{ it.qty }}" hint-placeholder-val="{{ false }}">
-                <div style="background:#f2d38a;border:1.5px solid #4a3222;border-radius:999px;font-size:10px;font-weight:800;padding:1px 6px">{{ it.qty }}</div>
-              </sc-if>
-              <div style="{{ it.priceStyle }}">{{ it.priceLabel }}</div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+                <div style="{{ it.priceStyle }}">{{ it.priceLabel }}</div>
+                <sc-if value="{{ it.showLink }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ it.editLink }}" style="{{ it.linkStyle }}">{{ it.linkLabel }}</button>
+                </sc-if>
+              </div>
             </div>
           </sc-for>
+          </sc-if>
         </div>
       </sc-for>
       <details style="margin-top:18px;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px">
@@ -101,11 +111,62 @@ input,select{font-family:inherit;color:#4a3222}
       </sc-if>
     </div>
   </div>
+  <sc-if value="{{ receiptOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeReceipt }}" style="position:absolute;inset:0;background:rgba(74,50,34,0.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px">
+      <div onClick="{{ stop }}" style="width:520px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;background:#fdf6e9;border:3px solid #4a3222;border-radius:20px;box-shadow:0 8px 0 #4a3222;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:16px 20px;background:#9cbf6e;border-bottom:3px solid #4a3222">
+          <div style="flex:1">
+            <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;line-height:1.1">Shopping list</div>
+            <div style="font-size:12px;font-weight:700;color:#3c5522">Items in your room you still need to buy</div>
+          </div>
+          <button onClick="{{ closeReceipt }}" style="display:flex;align-items:center;justify-content:center;background:#fffdf5;border:2px solid #4a3222;border-radius:999px;width:32px;height:32px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="background:#f3c1b4">✕</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:14px 20px">
+          <sc-if value="{{ hasBuy }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <sc-for list="{{ buyRows }}" as="r" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px dashed #e0cfa8">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:800;font-size:13.5px;line-height:1.2">{{ r.name }}</div>
+                    <div style="font-size:11.5px;font-weight:700;color:#a9744b">{{ r.detail }}</div>
+                  </div>
+                  <div style="font-weight:800;font-size:13.5px;white-space:nowrap">{{ r.line }}</div>
+                  <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ r.url }}" target="_blank" rel="noopener" style="background:#f2d38a;border:2px solid #4a3222;border-radius:999px;padding:5px 11px;font-weight:800;font-size:11.5px;text-decoration:none;color:#4a3222;white-space:nowrap;box-shadow:0 2px 0 #4a3222">Buy ›</a>
+                  </sc-if>
+                  <sc-if value="{{ r.noUrl }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ r.editLink }}" style="background:#fffdf5;border:2px dashed #a9744b;border-radius:999px;padding:5px 11px;font-weight:800;font-size:11.5px;cursor:pointer;color:#a9744b;white-space:nowrap">＋ Add link</button>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px 0">
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:16px">Total</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:20px">{{ receiptTotal }}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noBuy }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;padding:26px 10px;color:#a9744b;font-weight:700;font-size:13px">Nothing to buy yet — everything in your room is already owned. Add priced items from the catalog and they'll show up here.</div>
+          </sc-if>
+          <sc-if value="{{ hasOwned }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px">
+              <div style="font-family:'Baloo 2',cursive;font-size:12px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#a9744b">Already own</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                <sc-for list="{{ ownedRows }}" as="o" hint-placeholder-count="2">
+                  <div style="background:#eef3e0;border:1.5px solid #c3d29a;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;color:#5c7736">{{ o.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;wallColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#fbf2e2&quot;,&quot;options&quot;:[&quot;#fbf2e2&quot;,&quot;#e9efdc&quot;,&quot;#f6e3de&quot;,&quot;#e6eef2&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;while dragging&quot;,&quot;options&quot;:[&quot;while dragging&quot;,&quot;always&quot;,&quot;never&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showDoorClearance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Room&quot;}}">
 class Component extends DCLogic {
-  state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor'}};
+  state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], links:{}, receiptOpen:false, hoverBadge:null, hoverRow:null, collapsed:{}, form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor'}};
   VB = [-275,-85,635,400];
   SW = ['#9cbf6e','#d9a86c','#c9d8a0','#d98d63','#8fa8c8'];
   ZONES = [{x:0,y:3.73,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
@@ -135,7 +196,7 @@ class Component extends DCLogic {
   componentDidMount(){
     try{const s=JSON.parse(localStorage.getItem('studio-sim-v1')||'null'); if(s&&s.layouts){
       if(!s.v2){['A','B'].forEach(k=>{(s.layouts[k]||[]).forEach(i=>{ if(i.wall){ if(i.wall==='left')i.u=Math.min(i.u+3,14); else i.u=Math.min(i.u,16);} else if(i.y!=null){i.y=Math.min(i.y+3,14);} });});}
-      this.setState({layouts:s.layouts,custom:s.custom||[],active:s.active||'A'},()=>this.save());
+      this.setState({layouts:s.layouts,custom:s.custom||[],active:s.active||'A',links:s.links||{}},()=>this.save());
     }}catch(e){}
     this._kd=(e)=>this.onKey(e); window.addEventListener('keydown',this._kd);
     fetch('sprites/manifest.json').then(r=>r.ok?r.json():null).then(m=>{
@@ -154,7 +215,7 @@ class Component extends DCLogic {
   }
   spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const key=d.wall?(d.id+'-'+(item.wall||'back')):(d.id+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
   componentWillUnmount(){window.removeEventListener('keydown',this._kd); this.unbindDrag();}
-  save(){const {layouts,custom,active}=this.state; try{localStorage.setItem('studio-sim-v1',JSON.stringify({layouts,custom,active,v2:1}))}catch(e){}}
+  save(){const {layouts,custom,active,links}=this.state; try{localStorage.setItem('studio-sim-v1',JSON.stringify({layouts,custom,active,links,v2:1}))}catch(e){}}
   allDefs(){return this.DEFS.concat(this.state.custom)}
   def(id){return this.allDefs().find(d=>d.id===id)}
   L(){return this.state.layouts[this.state.active]}
@@ -170,7 +231,7 @@ class Component extends DCLogic {
     if(d.wall){it={uid:this.uid(),defId,wall:'back',u:Math.max(0,Math.min(10,17-d.w)),z:d.z!=null?d.z:3};}
     else{const n=this.L().length; let x=5+(n%4)*2, y=6+(Math.floor(n/4)%3)*2; const p=this.fit(x,y,d.w,d.d); it={uid:this.uid(),defId,x:p[0],y:p[1],rot:0};}
     const layouts={...this.state.layouts,[this.state.active]:this.L().concat([it])};
-    this.setState({layouts,sel:it.uid,mode:'single'},()=>this.save());
+    this.setState({layouts,sel:it.uid,mode:'single',hoverBadge:null},()=>this.save());
   }
   update(uid,patch,cb){const items=this.L().map(i=>i.uid===uid?{...i,...patch}:i); const layouts={...this.state.layouts,[this.state.active]:items}; this.setState({layouts},cb);}
   selItem(){return this.L().find(i=>i.uid===this.state.sel)}
@@ -189,9 +250,28 @@ class Component extends DCLogic {
     this.setState({layouts,sel:nit.uid},()=>this.save());
   }
   clearLayout(){if(!window.confirm('Clear the room?'))return; const layouts={...this.state.layouts,[this.state.active]:[]}; this.setState({layouts,sel:null},()=>this.save());}
+  removeLast(defId){
+    const items=this.L(); let idx=-1;
+    for(let i=items.length-1;i>=0;i--){if(items[i].defId===defId){idx=i;break;}}
+    if(idx<0)return; const removed=items[idx];
+    const na=items.slice(0,idx).concat(items.slice(idx+1));
+    const layouts={...this.state.layouts,[this.state.active]:na};
+    this.setState({layouts,hoverBadge:null,sel:this.state.sel===removed.uid?null:this.state.sel},()=>this.save());
+  }
+  editLink(defId){
+    const links={...(this.state.links||{})}; const cur=links[defId]||'';
+    const v=window.prompt('Paste the product link (URL) for this item:',cur);
+    if(v===null)return; let t=(v||'').trim();
+    if(t){ if(!/^https?:\/\//i.test(t))t='https://'+t; links[defId]=t; } else { delete links[defId]; }
+    this.setState({links},()=>this.save());
+  }
+  toggleGroup(name){const collapsed={...(this.state.collapsed||{})}; collapsed[name]=!collapsed[name]; this.setState({collapsed});}
+  openReceipt(){this.setState({receiptOpen:true});}
+  closeReceipt(){this.setState({receiptOpen:false});}
   copyLayout(from,to){const items=this.state.layouts[from].map(i=>({...i,uid:this.uid()})); const layouts={...this.state.layouts,[to]:items}; this.setState({layouts},()=>this.save());}
   onKey(e){
     if(e.target&&e.target.closest&&e.target.closest('input,select,textarea'))return;
+    if(this.state.receiptOpen){ if(e.key==='Escape')this.setState({receiptOpen:false}); return; }
     if(this.state.mode!=='single')return;
     const k=e.key;
     if(k==='Escape'){this.setState({sel:null});return;}
@@ -489,18 +569,43 @@ class Component extends DCLogic {
     const counts={}; (st.layouts[st.active]||[]).forEach(i=>{counts[i.defId]=(counts[i.defId]||0)+1});
     const GORDER=['Sleeping','Work','Living','Storage','Dining','Kitchen','Decor','Misc','Custom'];
     const defs=this.allDefs();
-    const groups=GORDER.map(name=>({name,items:defs.filter(d=>d.g===name).map(d=>{
+    const groups=GORDER.map(name=>({name,open:!(st.collapsed||{})[name],chevron:(st.collapsed||{})[name]?'▸':'▾',toggle:()=>this.toggleGroup(name),items:defs.filter(d=>d.g===name).map(d=>{
       const owned=!!d.owned||(!d.price&&d.g!=='Custom');
+      const cnt=counts[d.id]||0, hov=st.hoverBadge===d.id;
+      const rowHov=st.hoverRow===d.id&&st.hoverBadge!==d.id;
       return {
+        rowStyle:{position:'relative',display:'flex',alignItems:'center',gap:'8px',padding:'7px 9px',marginTop:'5px',background:'#fffdf5',border:'2px solid '+(rowHov?'#4a3222':'#e8d9bd'),borderRadius:'12px',cursor:'pointer',transform:rowHov?'translateY(-1px)':'none',marginTop:'14px'},
+        rowEnter:()=>this.setState({hoverRow:d.id}),
+        rowLeave:()=>this.setState({hoverRow:this.state.hoverRow===d.id?null:this.state.hoverRow}),
         name:d.name,
         dims:d.wall?this.fmt(d.w)+'′ wide':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′',
         priceLabel:d.owned?'Owned':(d.price>0?'$'+d.price:'$0'),
         priceStyle:{fontSize:'11px',fontWeight:800,color:d.owned?'#7c9a4d':'#4a3222',flexShrink:0},
         dot:{width:'12px',height:'12px',borderRadius:'50%',background:d.c||'#8fa8c8',border:'2px solid #4a3222',flexShrink:0},
-        qty:counts[d.id]?'×'+counts[d.id]:'',
+        qty:cnt?true:false,
+        badgeLabel:hov?'✕':'×'+cnt,
+        badgeStyle:{position:'absolute',top:'0',right:'0',transform:'translate(50%,-50%)',display:'flex',alignItems:'center',justifyContent:'center',minWidth:'22px',height:'22px',padding:'0 5px',borderRadius:'999px',border:'2px solid #4a3222',fontSize:'12px',fontWeight:800,lineHeight:1,cursor:'pointer',zIndex:3,boxShadow:'0 1px 0 #4a3222',background:hov?'#e0553f':'#f2d38a',color:hov?'#ffffff':'#4a3222'},
+        badgeEnter:()=>this.setState({hoverBadge:d.id}),
+        badgeLeave:()=>this.setState({hoverBadge:this.state.hoverBadge===d.id?null:this.state.hoverBadge}),
+        showLink:!owned,
+        linkLabel:(st.links||{})[d.id]?'✎ link':'＋ link',
+        linkStyle:(st.links||{})[d.id]
+          ?{background:'#f2d38a',border:'1.5px solid #4a3222',borderRadius:'8px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:'#4a3222',whiteSpace:'nowrap'}
+          :{background:'#fffdf5',border:'1.5px dashed #a9744b',borderRadius:'8px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:'#a9744b',whiteSpace:'nowrap'},
+        editLink:(e)=>{if(e&&e.stopPropagation)e.stopPropagation(); this.editLink(d.id);},
+        removeOne:(e)=>{if(e&&e.stopPropagation)e.stopPropagation(); this.removeLast(d.id);},
         add:()=>this.addItem(d.id)
       };
     })})).filter(g=>g.items.length);
+    const buyRows=[], ownedRows=[]; let rTotal=0;
+    defs.forEach(d=>{
+      const c=counts[d.id]; if(!c)return;
+      const isOwned=!!d.owned||(!d.price&&d.g!=='Custom');
+      if(isOwned){ownedRows.push({label:d.name+(c>1?' ×'+c:'')}); return;}
+      const unit=d.price||0; rTotal+=unit*c;
+      const url=(st.links||{})[d.id]||'';
+      buyRows.push({name:d.name, detail:(c>1?c+' × $'+unit:'$'+unit), line:'$'+(unit*c), url, hasUrl:!!url, noUrl:!url, editLink:()=>this.editLink(d.id)});
+    });
     const it=this.selItem();
     const d=it?this.def(it.defId):null;
     let selName='',selDims='',selWarn='';
@@ -526,7 +631,11 @@ class Component extends DCLogic {
       fW:form.w, setFW:setF('w'), fD:form.d, setFD:setF('d'), fH:form.h, setFH:setF('h'),
       fPrice:form.price, setFPrice:setF('price'),
       fMount:form.mount, setFMount:setF('mount'),
-      swatches, addCustom:()=>this.addCustom()
+      swatches, addCustom:()=>this.addCustom(),
+      openReceipt:()=>this.openReceipt(), closeReceipt:()=>this.closeReceipt(), stop:(e)=>e.stopPropagation(),
+      receiptOpen:st.receiptOpen, buyRows, ownedRows,
+      hasBuy:buyRows.length>0, noBuy:buyRows.length===0, hasOwned:ownedRows.length>0,
+      receiptTotal:'$'+rTotal
     };
   }
 }
