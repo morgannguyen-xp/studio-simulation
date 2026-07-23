@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Studio Layout Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;padding:0;height:100%;background:#cfe6ee;font-family:'Nunito',sans-serif;color:#4a3222}
 a{color:#7c9a4d}a:hover{color:#5c7736}
@@ -35,7 +35,7 @@ input,select{font-family:inherit;color:#4a3222}
     </div>
   </div>
   <div style="display:flex;flex:1;min-height:0">
-    <div style="width:274px;flex-shrink:0;background:#fdf6e9;border-right:3px solid #4a3222;overflow-y:auto;padding:12px 12px 20px 12px">
+    <div style="width: 274px; flex-shrink: 0; background: #fdf6e9; border-right: 3px solid #4a3222; overflow-y: auto; padding: 12px 12px 20px 12px; padding-right: 16px">
       <div style="font-family:'Baloo 2',cursive;font-size:16px;font-weight:800">Furniture catalog</div>
       <div style="font-size:11.5px;font-weight:700;color:#a9744b">Click an item to drop it in the room</div>
       <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
@@ -52,8 +52,8 @@ input,select{font-family:inherit;color:#4a3222}
               </sc-if>
               <div style="{{ it.dot }}"></div>
               <div style="flex:1;min-width:0">
-                <div style="font-weight:800;font-size:12.5px;line-height:1.2">{{ it.name }}</div>
-                <div style="font-size:11px;color:#a9744b;font-weight:700">{{ it.dims }}</div>
+                <div style="{{ it.nameStyle }}">{{ it.name }}</div>
+                <div style="{{ it.dimsStyle }}">{{ it.dims }}</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
                 <div style="{{ it.priceStyle }}">{{ it.priceLabel }}</div>
@@ -212,6 +212,69 @@ class Component extends DCLogic {
       inner=inner.replace(/<(path|polygon|polyline)(?![^>]*\bfill=)/g,'<$1 fill="none"');
       this.setState({roomSvg:inner});
     }).catch(()=>{});
+    fetch('figma/item-button.svg').then(r=>r.ok?r.text():null).then(t=>{
+      if(!t)return; let doc; try{doc=new DOMParser().parseFromString(t,'image/svg+xml');}catch(e){return;}
+      if(!doc||doc.querySelector('parsererror'))return;
+      this.setState({btnTheme:this.buildBtnTheme(doc)});
+    }).catch(()=>{});
+  }
+  buildBtnTheme(doc){
+    // Defaults. Figma's SVG export drops layer ids and outlines text, so we identify
+    // theme layers by geometry (which IS preserved): the two ~300px-wide boxes are the
+    // button (default = topmost, hover = next); the small pill chips are the link chips
+    // (dashed = "no link", solid = "link set"). Text sizes and the round marker can't
+    // survive Figma's flatten, so those stay code-side at these defaults.
+    const D={
+      bg:{fill:'#fffdf5',stroke:'#e8d9bd',sw:2,rx:12,h:54},
+      bgHover:{fill:'#fffdf5',stroke:'#4a3222'},
+      badge:{fill:'#f2d38a',stroke:'#4a3222',sw:2,rx:999,text:'#4a3222'},
+      badgeHover:{fill:'#e0553f',stroke:'#4a3222',text:'#ffffff'},
+      name:{fs:12.5,fill:'#4a3222'}, dims:{fs:11,fill:'#a9744b'},
+      priceOwned:{fill:'#7c9a4d'}, priceBuy:{fill:'#4a3222'},
+      link:{fill:'#fffdf5',stroke:'#a9744b',rx:8,text:'#a9744b'},
+      linkSet:{fill:'#f2d38a',stroke:'#4a3222',text:'#4a3222'}
+    };
+    if(!doc)return D;
+    try{
+      const num=(v)=>{const f=parseFloat(v); return isNaN(f)?null:f;};
+      const rects=Array.prototype.slice.call(doc.querySelectorAll('rect')).map(r=>({
+        x:num(r.getAttribute('x'))||0, y:num(r.getAttribute('y'))||0,
+        w:num(r.getAttribute('width'))||0, h:num(r.getAttribute('height'))||0,
+        rx:r.getAttribute('rx'), fill:r.getAttribute('fill'),
+        stroke:r.getAttribute('stroke'), sw:r.getAttribute('stroke-width'), dash:r.getAttribute('stroke-dasharray')
+      }));
+      // Figma splits a filled+stroked shape into two rects with identical geometry — merge them.
+      const merged={};
+      rects.forEach(r=>{const k=r.x+'_'+r.y+'_'+r.w+'_'+r.h; const m=merged[k]||(merged[k]={x:r.x,y:r.y,w:r.w,h:r.h,rx:null,fill:null,stroke:null,sw:null,dash:null});
+        if(r.fill&&r.fill!=='none')m.fill=r.fill;
+        if(r.stroke&&r.stroke!=='none'){m.stroke=r.stroke; m.sw=r.sw; m.dash=r.dash;}
+        if(r.rx!=null)m.rx=r.rx;
+      });
+      const shapes=Object.keys(merged).map(k=>merged[k]);
+      const boxes=shapes.filter(s=>s.w>=250&&s.w<=360).sort((a,b)=>a.y-b.y);
+      if(boxes[0]){const b=boxes[0]; D.bg={fill:b.fill||D.bg.fill,stroke:b.stroke||D.bg.stroke,sw:num(b.sw)||D.bg.sw,rx:num(b.rx)||D.bg.rx,h:b.h||D.bg.h};}
+      if(boxes[1]){const b=boxes[1]; D.bgHover={fill:b.fill||D.bgHover.fill,stroke:b.stroke||D.bgHover.stroke};}
+      const chips=shapes.filter(s=>s.w>=28&&s.w<=100&&s.h>=12&&s.h<=32);
+      const unset=chips.filter(c=>c.dash).sort((a,b)=>a.y-b.y)[0];
+      const setc=chips.filter(c=>!c.dash&&c.stroke).sort((a,b)=>a.y-b.y)[0];
+      if(unset)D.link={fill:unset.fill||D.link.fill,stroke:unset.stroke||D.link.stroke,rx:num(unset.rx)!=null?num(unset.rx):D.link.rx,text:D.link.text};
+      if(setc)D.linkSet={fill:setc.fill||D.linkSet.fill,stroke:setc.stroke||D.linkSet.stroke,text:D.linkSet.text};
+      // If exported from Figma with "Include id attribute" ON (and text not outlined),
+      // read every layer by name — this gives full control incl. text sizes/colours + the marker.
+      const el=(id)=>doc.querySelector('[id="'+id+'"]');
+      const at=(id,a)=>{const e=el(id); if(!e)return null; let v=e.getAttribute(a); if((v==null||v==='')&&e.firstElementChild)v=e.firstElementChild.getAttribute(a); return (v==null||v==='')?null:v;};
+      const ov=(obj,id,map)=>{ if(!el(id))return; Object.keys(map).forEach(k=>{const [a,isNum]=map[k]; const raw=at(id,a); if(raw!=null)obj[k]=isNum?(num(raw)!=null?num(raw):obj[k]):raw;}); };
+      ov(D.bg,'bg',{fill:['fill'],stroke:['stroke'],sw:['stroke-width',1],rx:['rx',1],h:['height',1]});
+      ov(D.bgHover,'bg-hover',{fill:['fill'],stroke:['stroke']});
+      ov(D.badge,'badge',{fill:['fill'],stroke:['stroke'],sw:['stroke-width',1],rx:['rx',1]}); ov(D.badge,'badge-text',{text:['fill']});
+      ov(D.badgeHover,'badge-hover',{fill:['fill'],stroke:['stroke']}); ov(D.badgeHover,'badge-hover-text',{text:['fill']});
+      ov(D.name,'name',{fs:['font-size',1],fill:['fill']});
+      ov(D.dims,'dims',{fs:['font-size',1],fill:['fill']});
+      ov(D.priceOwned,'price-owned',{fill:['fill']}); ov(D.priceBuy,'price-buy',{fill:['fill']});
+      ov(D.link,'link',{fill:['fill'],stroke:['stroke'],rx:['rx',1]}); ov(D.link,'link-text',{text:['fill']});
+      ov(D.linkSet,'link-set',{fill:['fill'],stroke:['stroke']}); ov(D.linkSet,'link-set-text',{text:['fill']});
+    }catch(e){}
+    return D;
   }
   spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const key=d.wall?(d.id+'-'+(item.wall||'back')):(d.id+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
   componentWillUnmount(){window.removeEventListener('keydown',this._kd); this.unbindDrag();}
@@ -569,29 +632,32 @@ class Component extends DCLogic {
     const counts={}; (st.layouts[st.active]||[]).forEach(i=>{counts[i.defId]=(counts[i.defId]||0)+1});
     const GORDER=['Sleeping','Work','Living','Storage','Dining','Kitchen','Decor','Misc','Custom'];
     const defs=this.allDefs();
+    const T=st.btnTheme||this.buildBtnTheme(null);
     const groups=GORDER.map(name=>({name,open:!(st.collapsed||{})[name],chevron:(st.collapsed||{})[name]?'▸':'▾',toggle:()=>this.toggleGroup(name),items:defs.filter(d=>d.g===name).map(d=>{
       const owned=!!d.owned||(!d.price&&d.g!=='Custom');
       const cnt=counts[d.id]||0, hov=st.hoverBadge===d.id;
       const rowHov=st.hoverRow===d.id&&st.hoverBadge!==d.id;
       return {
-        rowStyle:{position:'relative',display:'flex',alignItems:'center',gap:'8px',padding:'7px 9px',marginTop:'5px',background:'#fffdf5',border:'2px solid '+(rowHov?'#4a3222':'#e8d9bd'),borderRadius:'12px',cursor:'pointer',transform:rowHov?'translateY(-1px)':'none',marginTop:'14px'},
+        rowStyle:{position:'relative',display:'flex',alignItems:'center',gap:'8px',padding:'7px 9px',minHeight:T.bg.h+'px',background:rowHov?T.bgHover.fill:T.bg.fill,border:T.bg.sw+'px solid '+(rowHov?T.bgHover.stroke:T.bg.stroke),borderRadius:T.bg.rx+'px',cursor:'pointer',transform:rowHov?'translateY(-1px)':'none',marginTop:'14px'},
         rowEnter:()=>this.setState({hoverRow:d.id}),
         rowLeave:()=>this.setState({hoverRow:this.state.hoverRow===d.id?null:this.state.hoverRow}),
         name:d.name,
         dims:d.wall?this.fmt(d.w)+'′ wide':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′',
         priceLabel:d.owned?'Owned':(d.price>0?'$'+d.price:'$0'),
-        priceStyle:{fontSize:'11px',fontWeight:800,color:d.owned?'#7c9a4d':'#4a3222',flexShrink:0},
+        priceStyle:{fontSize:'11px',fontWeight:800,color:d.owned?T.priceOwned.fill:T.priceBuy.fill,flexShrink:0},
+        nameStyle:{fontWeight:800,fontSize:T.name.fs+'px',lineHeight:1.2,color:T.name.fill},
+        dimsStyle:{fontSize:T.dims.fs+'px',color:T.dims.fill,fontWeight:700},
         dot:{width:'12px',height:'12px',borderRadius:'50%',background:d.c||'#8fa8c8',border:'2px solid #4a3222',flexShrink:0},
         qty:cnt?true:false,
         badgeLabel:hov?'✕':'×'+cnt,
-        badgeStyle:{position:'absolute',top:'0',right:'0',transform:'translate(50%,-50%)',display:'flex',alignItems:'center',justifyContent:'center',minWidth:'22px',height:'22px',padding:'0 5px',borderRadius:'999px',border:'2px solid #4a3222',fontSize:'12px',fontWeight:800,lineHeight:1,cursor:'pointer',zIndex:3,boxShadow:'0 1px 0 #4a3222',background:hov?'#e0553f':'#f2d38a',color:hov?'#ffffff':'#4a3222'},
+        badgeStyle:{position:'absolute',top:'0',right:'0',transform:'translate(50%,-50%)',display:'flex',alignItems:'center',justifyContent:'center',minWidth:'22px',height:'22px',padding:'0 5px',borderRadius:T.badge.rx+'px',border:(hov?T.badgeHover:T.badge).sw+'px solid '+(hov?T.badgeHover.stroke:T.badge.stroke),fontSize:'12px',fontWeight:800,lineHeight:1,cursor:'pointer',zIndex:3,boxShadow:'0 1px 0 #4a3222',background:hov?T.badgeHover.fill:T.badge.fill,color:hov?T.badgeHover.text:T.badge.text},
         badgeEnter:()=>this.setState({hoverBadge:d.id}),
         badgeLeave:()=>this.setState({hoverBadge:this.state.hoverBadge===d.id?null:this.state.hoverBadge}),
         showLink:!owned,
         linkLabel:(st.links||{})[d.id]?'✎ link':'＋ link',
         linkStyle:(st.links||{})[d.id]
-          ?{background:'#f2d38a',border:'1.5px solid #4a3222',borderRadius:'8px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:'#4a3222',whiteSpace:'nowrap'}
-          :{background:'#fffdf5',border:'1.5px dashed #a9744b',borderRadius:'8px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:'#a9744b',whiteSpace:'nowrap'},
+          ?{background:T.linkSet.fill,border:'1.5px solid '+T.linkSet.stroke,borderRadius:T.link.rx+'px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:T.linkSet.text,whiteSpace:'nowrap'}
+          :{background:T.link.fill,border:'1.5px dashed '+T.link.stroke,borderRadius:T.link.rx+'px',padding:'2px 8px',fontSize:'10.5px',fontWeight:800,cursor:'pointer',color:T.link.text,whiteSpace:'nowrap'},
         editLink:(e)=>{if(e&&e.stopPropagation)e.stopPropagation(); this.editLink(d.id);},
         removeOne:(e)=>{if(e&&e.stopPropagation)e.stopPropagation(); this.removeLast(d.id);},
         add:()=>this.addItem(d.id)
