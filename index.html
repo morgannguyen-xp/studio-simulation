@@ -185,6 +185,7 @@ class Component extends DCLogic {
     {id:'sofa',g:'Living',name:'2-seat sofa',w:5,d:3,h:2.5,price:500,kind:'sofa',c:'#9cbf6e'},
     {id:'ctable',g:'Living',name:'Coffee table',w:3.3,d:1.7,h:1.4,price:120,kind:'table',c:'#8b5e3c'},
     {id:'console',g:'Living',name:'Media console',w:5,d:1.4,h:1.7,price:180,kind:'console',c:'#f0e3c8'},
+    {id:'tv',g:'Living',name:'40″ TV · stackable',w:3,d:0.8,h:2.2,price:220,kind:'tv',stack:1,c:'#3d3229'},
     {id:'kallax',g:'Storage',name:'KALLAX 2×4',w:4.8,d:1.3,h:2.5,price:90,kind:'kallax',c:'#e6d9bd'},
     {id:'dresser',g:'Storage',name:'3-drawer dresser',w:2.7,d:1.5,h:2.5,price:0,owned:1,kind:'drawer',drawers:3,c:'#d9a86c'},
     {id:'wardrobe',g:'Storage',name:'Wardrobe',w:3,d:2,h:6,price:130,kind:'wardrobe',c:'#e6cfa3'},
@@ -326,12 +327,32 @@ class Component extends DCLogic {
     const layouts={...this.state.layouts,[this.state.active]:na};
     this.setState({layouts,hoverBadge:null,sel:this.state.sel===removed.uid?null:this.state.sel},()=>this.save());
   }
+  linkOf(defId){const v=(this.state.links||{})[defId]; if(!v)return null; return typeof v==='string'?{url:v,price:null}:v;}
+  priceOf(d){
+    const ow=!!d.owned||(!d.price&&d.g!=='Custom'); if(ow)return 0;
+    const l=this.linkOf(d.id); if(l&&l.price>0)return l.price;
+    if(d.g==='Custom'&&d.price>0)return d.price;
+    return null; // unknown until a linked price is provided
+  }
+  setLinkPrice(defId,price){const l=this.linkOf(defId); if(!l)return; const links={...(this.state.links||{})}; links[defId]={url:l.url,price}; this.setState({links},()=>this.save());}
   editLink(defId){
-    const links={...(this.state.links||{})}; const cur=links[defId]||'';
-    const v=window.prompt('Paste the product link (URL) for this item:',cur);
+    const cur=this.linkOf(defId)||{url:'',price:null};
+    const v=window.prompt('Paste the product link (URL) for this item:',cur.url||'');
     if(v===null)return; let t=(v||'').trim();
-    if(t){ if(!/^https?:\/\//i.test(t))t='https://'+t; links[defId]=t; } else { delete links[defId]; }
+    const links={...(this.state.links||{})};
+    if(!t){ delete links[defId]; this.setState({links},()=>this.save()); return; }
+    if(!/^https?:\/\//i.test(t))t='https://'+t;
+    links[defId]={url:t,price:cur.price};
     this.setState({links},()=>this.save());
+    // Auto-extract via the /api/price serverless fn (live on the Vercel deploy);
+    // anywhere it's unavailable or the shop blocks scraping, fall back to asking.
+    fetch('/api/price?url='+encodeURIComponent(t)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{
+      if(j&&j.price>0){this.setLinkPrice(defId,j.price); return;}
+      const pv=window.prompt("Couldn't read the price automatically — what does it cost? (e.g. 129.99, empty to skip)",cur.price!=null?String(cur.price):'');
+      if(pv===null)return;
+      const f=parseFloat(String(pv).replace(/[^0-9.]/g,''));
+      this.setLinkPrice(defId,(!isNaN(f)&&f>0)?f:null);
+    });
   }
   toggleGroup(name){const collapsed={...(this.state.collapsed||{})}; collapsed[name]=!collapsed[name]; this.setState({collapsed});}
   openReceipt(){this.setState({receiptOpen:true});}
@@ -492,6 +513,14 @@ class Component extends DCLogic {
         const ht=4+2*H, hb=8+3*H;
         out.push(this.rawPg((s0[0]-ht)+','+yT+' '+(s0[0]+ht)+','+yT+' '+(s0[0]+hb)+','+yB+' '+(s0[0]-hb)+','+yB,d.c||'#f2d38a'));
         break;}
+      case 'tv':{
+        const dk='#33333b';
+        B(w/2-0.8,0.15,1.6,dd-0.45,0,0.12,dk);
+        B(w/2-0.2,dd-0.6,0.4,0.3,0.12,0.5,dk);
+        B(0,dd-0.28,w,0.28,0.62,H-0.62,'#3d3229');
+        flush();
+        FQ(0.12,0.74,w-0.12,H-0.12,'#8fa3b3');
+        break;}
       case 'plant':
         B(w/2-0.4,dd/2-0.4,0.8,0.8,0,0.65,'#c67b52'); B(w/2-0.46,dd/2-0.46,0.92,0.92,0.65,0.16,'#d98d63'); flush();
         out.push(this.el2(cx,cy,1.15,0.62,'#7c9a4d')); out.push(this.el2(cx,cy,1.65,0.5,'#8fb35e')); out.push(this.el2(cx,cy,2.15,0.36,'#a5c46f'));
@@ -504,7 +533,7 @@ class Component extends DCLogic {
         B(0,0,w,dd,0,H,C); flush();
     }
     if(fl.red||fl.warn)out.push(this.pg([[X,Y],[X+fx,Y],[X+fx,Y+fy],[X,Y+fy]],'rgba(214,72,54,'+(fl.warn?0.35:0.22)+')',{stroke:'#c8442e',strokeDasharray:'5 4',strokeWidth:1.6}));
-    return React.createElement('g',{key:item.uid,onPointerDown:interactive?(e)=>this.downItem(e,item.uid):undefined,style:interactive?{cursor:'grab'}:undefined},[React.createElement('title',{key:'t'},d.name)].concat(out));
+    return React.createElement('g',{key:item.uid,transform:fl.zb?('translate(0,'+(-fl.zb*12)+')'):undefined,onPointerDown:interactive?(e)=>this.downItem(e,item.uid):undefined,style:interactive?{cursor:'grab'}:undefined},[React.createElement('title',{key:'t'},d.name)].concat(out));
   }
   drawWallItem(item,d,fl,interactive){
     const wall=item.wall||'back', u=item.u, z=item.z!=null?item.z:(d.z!=null?d.z:3), w=d.w, h=d.h||2;
@@ -609,8 +638,16 @@ class Component extends DCLogic {
     }
     solids.forEach(i=>{const ff=this.fp(i,defOf(i)); if(this.inZone(i.x,i.y,ff.fx,ff.fy))warn[i.uid]=1;});
     const skey=(i)=>{const ff=this.fp(i,defOf(i)); return i.x+i.y+(ff.fx+ff.fy)/2};
+    // Stackable items (stack:1) sit on top of whatever furniture they overlap:
+    // lift them by the tallest overlapped surface and draw them after everything else.
+    const zbMap={};
+    solids.filter(i=>defOf(i).stack).forEach(i=>{const f=this.fp(i,defOf(i)); let top=0;
+      hard.forEach(o=>{const fo=this.fp(o,defOf(o)); if(this.rInt(i.x,i.y,f.fx,f.fy,o.x,o.y,fo.fx,fo.fy))top=Math.max(top,defOf(o).h||0);});
+      if(top)zbMap[i.uid]=top;});
     rugs.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid},interactive)));
-    solids.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid,red:red[i.uid],warn:warn[i.uid]},interactive)));
+    const nstk=solids.filter(i=>!defOf(i).stack), stk=solids.filter(i=>defOf(i).stack);
+    nstk.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid,red:red[i.uid],warn:warn[i.uid]},interactive)));
+    stk.sort((a,b)=>skey(a)-skey(b)).forEach(i=>els.push(this.drawFloorItem(i,defOf(i),{sel:interactive&&st.sel===i.uid,red:red[i.uid],warn:warn[i.uid],zb:zbMap[i.uid]},interactive)));
     return React.createElement('svg',{
       key:'svg'+key, viewBox:this.VB.join(' '),
       style:{width:'100%',height:'100%',display:'block',touchAction:'none'},
@@ -619,7 +656,7 @@ class Component extends DCLogic {
     },els);
   }
   fmt(v){const s=Math.round(v*10)/10; return s%1?s.toFixed(1):String(s)}
-  tallyOf(k){const items=this.state.layouts[k]||[]; let n=0,t=0; items.forEach(i=>{const d=this.def(i.defId); if(d&&d.price>0){n++;t+=d.price}}); return n?n+' to buy · $'+t:'All owned · $0';}
+  tallyOf(k){const items=this.state.layouts[k]||[]; let n=0,t=0,unk=0; items.forEach(i=>{const d=this.def(i.defId); if(!d)return; const ow=!!d.owned||(!d.price&&d.g!=='Custom'); if(ow)return; n++; const p=this.priceOf(d); if(p!=null)t+=p; else unk++;}); return n?(n+' to buy · $'+t+(unk?' · '+unk+' unpriced':'')):'All owned · $0';}
   addCustom(){
     const f=this.state.form; const wIn=parseFloat(f.w), dIn=parseFloat(f.d), hIn=parseFloat(f.h);
     const isWall=f.mount==='wall', isRugM=f.mount==='rug';
@@ -648,7 +685,7 @@ class Component extends DCLogic {
         rowLeave:()=>this.setState({hoverRow:this.state.hoverRow===d.id?null:this.state.hoverRow}),
         name:d.name,
         dims:d.wall?this.fmt(d.w)+'′ wide':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′',
-        priceLabel:d.owned?'Owned':(d.price>0?'$'+d.price:'$0'),
+        priceLabel:owned?'Owned':(this.priceOf(d)!=null?'$'+this.priceOf(d):'–'),
         priceStyle:{fontSize:'11px',fontWeight:800,color:d.owned?T.priceOwned.fill:T.priceBuy.fill,flexShrink:0},
         nameStyle:{fontWeight:800,fontSize:T.name.fs+'px',lineHeight:1.2,color:T.name.fill},
         dimsStyle:{fontSize:T.dims.fs+'px',color:T.dims.fill,fontWeight:700},
@@ -674,16 +711,17 @@ class Component extends DCLogic {
       const c=counts[d.id]; if(!c)return;
       const isOwned=!!d.owned||(!d.price&&d.g!=='Custom');
       if(isOwned){ownedRows.push({label:d.name+(c>1?' ×'+c:'')}); return;}
-      const unit=d.price||0; rTotal+=unit*c;
-      const url=(st.links||{})[d.id]||'';
-      buyRows.push({name:d.name, detail:(c>1?c+' × $'+unit:'$'+unit), line:'$'+(unit*c), url, hasUrl:!!url, noUrl:!url, editLink:()=>this.editLink(d.id)});
+      const p=this.priceOf(d); if(p!=null)rTotal+=p*c;
+      const l=this.linkOf(d.id); const url=l?l.url:'';
+      buyRows.push({name:d.name, detail:p!=null?(c>1?c+' × $'+p:'$'+p):'no price yet — edit link to add', line:p!=null?'$'+(p*c):'–', url, hasUrl:!!url, noUrl:!url, editLink:()=>this.editLink(d.id)});
     });
     const it=this.selItem();
     const d=it?this.def(it.defId):null;
     let selName='',selDims='',selWarn='';
     if(it&&d){
       selName=d.name;
-      selDims=(d.wall?this.fmt(d.w)+'′ × '+this.fmt(d.h)+'′ on wall':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′')+(d.price>0?' · $'+d.price:' · owned');
+      const selP=this.priceOf(d);
+      selDims=(d.wall?this.fmt(d.w)+'′ × '+this.fmt(d.h)+'′ on wall':this.fmt(d.w)+'′ × '+this.fmt(d.d)+'′')+(selP===0?' · owned':(selP!=null?' · $'+selP:' · –'));
       if(!d.wall&&!this.isRug(d)){const ff=this.fp(it,d); if(this.inZone(it.x,it.y,ff.fx,ff.fy))selWarn='In the door clearance — it will snap back when dropped';}
     }
     const form=st.form;
