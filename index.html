@@ -192,6 +192,8 @@ class Component extends DCLogic {
   VB = [-275,-85,635,400];
   SW = ['#9cbf6e','#d9a86c','#d98d63','#8fa8c8'];
   FLOORKINDS = {bed:1,sofa:1,chair:1,table:1,roundtable:1,console:1,kallax:1,drawer:1,wardrobe:1,shelf:1,cart:1,ottoman:1,basket:1,rug:1,lamp:1,plant:1,tv:1};
+  // Which real catalog sprite a matched custom shape borrows (kinds not here fall back to the code drawing).
+  KIND2SPRITE = {bed:'bed',sofa:'sofa',chair:'dchair',table:'sidetable',roundtable:'dtable',console:'console',kallax:'kallax',drawer:'dresser',wardrobe:'wardrobe',shelf:'ushelf',lamp:'flamp',plant:'plant',rug:'rug',mirror:'mirror'};
   KINDWORDS = [
     ['bed',['bed','mattress','bunk','futon']],
     ['sofa',['sofa','couch','loveseat','sectional','settee']],
@@ -222,7 +224,12 @@ class Component extends DCLogic {
   }
   migrateCustomShapes(){
     let changed=false;
-    const custom=(this.state.custom||[]).map(c=>{ if(c.kind==='custom'){const k=this.inferKind(c.name); if(k&&this.FLOORKINDS[k]){changed=true; return {...c,kind:k};}} return c; });
+    const custom=(this.state.custom||[]).map(c=>{
+      let nc=c;
+      if(nc.kind==='custom'){const k=this.inferKind(nc.name); if(k&&this.FLOORKINDS[k]){nc={...nc,kind:k}; changed=true;}}
+      if(nc.spriteId==null){const sp=this.KIND2SPRITE[nc.kind]; if(sp){nc=(nc===c?{...c}:nc); nc.spriteId=sp; changed=true;}}
+      return nc;
+    });
     if(changed)this.setState({custom},()=>this.save());
   }
   ZONES = [{x:0,y:3.73,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
@@ -333,7 +340,7 @@ class Component extends DCLogic {
     }catch(e){}
     return D;
   }
-  spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const key=d.wall?(d.id+'-'+(item.wall||'back')):(d.id+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
+  spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const sid=d.spriteId||d.id; const key=d.wall?(sid+'-'+(item.wall||'back')):(sid+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
   componentWillUnmount(){window.removeEventListener('keydown',this._kd); this.unbindDrag();}
   save(){const {layouts,custom,active,links,hidden}=this.state; try{localStorage.setItem('studio-sim-v1',JSON.stringify({layouts,custom,active,links,hidden,v2:1}))}catch(e){}}
   allDefs(){const h=this.state.hidden||{}; return this.DEFS.concat(this.state.custom).filter(d=>!h[d.id])}
@@ -733,7 +740,7 @@ class Component extends DCLogic {
     const def={id,g:'Custom',name:(f.name||'').trim()||'Custom item',
       w:q(wIn), d:isWall?0.3:q(dIn), h:hIn>0?q(hIn):(isRugM?0:2), z:3,
       price:f.owned?0:(parseFloat(f.price)||0), owned:f.owned?1:0,
-      c:(f.customColor||this.SW[f.c]), kind, wall:isWall?1:0};
+      c:(f.customColor||this.SW[f.c]), kind, spriteId:this.KIND2SPRITE[kind], wall:isWall?1:0};
     let link=(f.link||'').trim();
     const links={...(this.state.links||{})};
     if(!f.owned&&link){ if(!/^https?:\/\//i.test(link))link='https://'+link; links[id]={url:link,price:(parseFloat(f.price)||null)}; }
