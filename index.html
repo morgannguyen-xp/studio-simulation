@@ -73,23 +73,33 @@ input,select{font-family:inherit;color:#4a3222}
       </sc-for>
       <details style="margin-top:18px;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px">
         <summary style="font-family:'Baloo 2',cursive;font-weight:800;font-size:13px;cursor:pointer">＋ Add custom item</summary>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-          <input placeholder="Name" value="{{ fName }}" onChange="{{ setFName }}" style="grid-column:1/-1;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-          <input placeholder="Width (in)" value="{{ fW }}" onChange="{{ setFW }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-          <input placeholder="Depth (in)" value="{{ fD }}" onChange="{{ setFD }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-          <input placeholder="Height (in)" value="{{ fH }}" onChange="{{ setFH }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-          <input placeholder="Price $" value="{{ fPrice }}" onChange="{{ setFPrice }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-          <select value="{{ fMount }}" onChange="{{ setFMount }}" style="grid-column:1/-1;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
-            <option value="floor">Floor item</option>
-            <option value="rug">Rug (furniture can sit on it)</option>
-            <option value="wall">Wall item</option>
-          </select>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <div onClick="{{ setNew }}" style="{{ newBtnStyle }}">Need to buy</div>
+          <div onClick="{{ setOwned }}" style="{{ ownedBtnStyle }}">I own it</div>
         </div>
+        <input placeholder="Name" value="{{ fName }}" onChange="{{ setFName }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px">
+          <input placeholder="Width (in)" value="{{ fW }}" onChange="{{ setFW }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 6px;font-size:12px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+          <input placeholder="Depth (in)" value="{{ fD }}" onChange="{{ setFD }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 6px;font-size:12px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+          <input placeholder="Height (in)" value="{{ fH }}" onChange="{{ setFH }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:7px 6px;font-size:12px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+        </div>
+        <select value="{{ fMount }}" onChange="{{ setFMount }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <option value="floor">Floor item</option>
+          <option value="rug">Rug (furniture can sit on it)</option>
+          <option value="wall">Wall item</option>
+        </select>
+        <sc-if value="{{ fNew }}" hint-placeholder-val="{{ true }}">
+          <input placeholder="Product link" value="{{ fLink }}" onChange="{{ setFLink }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+          <input placeholder="Price $" value="{{ fPrice }}" onChange="{{ setFPrice }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
+        </sc-if>
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
           <span style="font-size:11px;font-weight:800">Color</span>
           <sc-for list="{{ swatches }}" as="s" hint-placeholder-count="5">
             <div onClick="{{ s.pick }}" style="{{ s.style }}"></div>
           </sc-for>
+          <label title="Custom colour" style="{{ customColorStyle }}">
+            <input type="color" value="{{ fCustomColor }}" onChange="{{ setCustomColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;margin:0">
+          </label>
         </div>
         <button onClick="{{ addCustom }}" style="margin-top:10px;width:100%;background:#9cbf6e;border:2px solid #4a3222;border-radius:10px;padding:8px 10px;font-weight:800;font-size:12.5px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">Add to catalog</button>
       </details>
@@ -171,9 +181,9 @@ input,select{font-family:inherit;color:#4a3222}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;wallColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#fbf2e2&quot;,&quot;options&quot;:[&quot;#fbf2e2&quot;,&quot;#e9efdc&quot;,&quot;#f6e3de&quot;,&quot;#e6eef2&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;while dragging&quot;,&quot;options&quot;:[&quot;while dragging&quot;,&quot;always&quot;,&quot;never&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showDoorClearance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Room&quot;}}">
 class Component extends DCLogic {
-  state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], links:{}, receiptOpen:false, hoverBadge:null, hoverRow:null, collapsed:{}, form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor'}};
+  state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], links:{}, receiptOpen:false, hoverBadge:null, hoverRow:null, collapsed:{}, form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor',owned:false,link:'',customColor:''}};
   VB = [-275,-85,635,400];
-  SW = ['#9cbf6e','#d9a86c','#c9d8a0','#d98d63','#8fa8c8'];
+  SW = ['#9cbf6e','#d9a86c','#d98d63','#8fa8c8'];
   ZONES = [{x:0,y:3.73,w:2.5,d:2.5},{x:0.7,y:3,w:2.5,d:2.5}];
   wr(wall){return wall==='back'?[0,17]:[3,15]}
   DEFS = [
@@ -185,7 +195,7 @@ class Component extends DCLogic {
     {id:'sofa',g:'Living',name:'2-seat sofa',w:5,d:3,h:2.5,price:500,kind:'sofa',c:'#9cbf6e'},
     {id:'ctable',g:'Living',name:'Coffee table',w:3.3,d:1.7,h:1.4,price:120,kind:'table',c:'#8b5e3c'},
     {id:'console',g:'Living',name:'Media console',w:5,d:1.4,h:1.7,price:180,kind:'console',c:'#f0e3c8'},
-    {id:'tv',g:'Living',name:'40″ TV · stackable',w:3,d:0.8,h:2.2,price:220,kind:'tv',stack:1,c:'#3d3229'},
+    {id:'tv',g:'Living',name:'40″ TV · stackable',w:3,d:0.8,h:3,price:220,kind:'tv',stack:1,c:'#3d3229'},
     {id:'kallax',g:'Storage',name:'KALLAX 2×4',w:4.8,d:1.3,h:2.5,price:90,kind:'kallax',c:'#e6d9bd'},
     {id:'dresser',g:'Storage',name:'3-drawer dresser',w:2.7,d:1.5,h:2.5,price:0,owned:1,kind:'drawer',drawers:3,c:'#d9a86c'},
     {id:'wardrobe',g:'Storage',name:'Wardrobe',w:3,d:2,h:6,price:130,kind:'wardrobe',c:'#e6cfa3'},
@@ -196,7 +206,7 @@ class Component extends DCLogic {
     {id:'rug',g:'Decor',name:'Area rug 5×7',w:7,d:5,h:0,price:140,kind:'rug',c:'#9cbf6e'},
     {id:'flamp',g:'Decor',name:'Floor lamp',w:1.2,d:1.2,h:5,price:45,kind:'lamp',c:'#f2d38a'},
     {id:'mirror',g:'Decor',name:'Full-length mirror · wall',wall:1,w:1.7,h:5,z:0.3,price:60,kind:'mirror'},
-    {id:'plant',g:'Decor',name:'Potted plant',w:1.3,d:1.3,h:3,price:25,kind:'plant',c:'#7c9a4d'},
+    {id:'plant',g:'Decor',name:'Potted plant',w:1.3,d:1.3,h:3,price:25,kind:'plant',stack:1,c:'#7c9a4d'},
     {id:'sidetable',g:'Misc',name:'Side table',w:1.5,d:1.5,h:1.8,price:40,kind:'table',c:'#a9744b'}
   ];
   componentDidMount(){
@@ -663,10 +673,17 @@ class Component extends DCLogic {
     if(!(wIn>0)){window.alert('Enter a width in inches'); return;}
     if(!isWall&&!(dIn>0)){window.alert('Enter a depth in inches'); return;}
     const q=(v)=>Math.max(0.25,Math.round(v/12*4)/4);
-    const def={id:'c'+Date.now().toString(36),g:'Custom',name:(f.name||'').trim()||'Custom item',
+    const id='c'+Date.now().toString(36);
+    const def={id,g:'Custom',name:(f.name||'').trim()||'Custom item',
       w:q(wIn), d:isWall?0.3:q(dIn), h:hIn>0?q(hIn):(isRugM?0:2), z:3,
-      price:parseFloat(f.price)||0, c:this.SW[f.c], kind:isRugM?'rug':(isWall?'customwall':'custom'), wall:isWall?1:0};
-    this.setState({custom:this.state.custom.concat([def]),form:{...f,name:''}},()=>{this.save(); this.addItem(def.id);});
+      price:f.owned?0:(parseFloat(f.price)||0), owned:f.owned?1:0,
+      c:(f.customColor||this.SW[f.c]), kind:isRugM?'rug':(isWall?'customwall':'custom'), wall:isWall?1:0};
+    let link=(f.link||'').trim();
+    const links={...(this.state.links||{})};
+    if(!f.owned&&link){ if(!/^https?:\/\//i.test(link))link='https://'+link; links[id]={url:link,price:(parseFloat(f.price)||null)}; }
+    this.setState({custom:this.state.custom.concat([def]),links,form:{...f,name:'',link:'',price:''}},()=>{this.save(); this.addItem(id);
+      if(!f.owned&&link){ fetch('/api/price?url='+encodeURIComponent(link)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ if(j&&j.price>0)this.setLinkPrice(id,j.price); }); }
+    });
   }
   renderVals(){
     const st=this.state;
@@ -725,9 +742,11 @@ class Component extends DCLogic {
       if(!d.wall&&!this.isRug(d)){const ff=this.fp(it,d); if(this.inZone(it.x,it.y,ff.fx,ff.fy))selWarn='In the door clearance — it will snap back when dropped';}
     }
     const form=st.form;
+    const ownSel=!!form.owned;
+    const segStyle=(active)=>({flex:1,textAlign:'center',padding:'6px 8px',fontSize:'11.5px',fontWeight:800,cursor:'pointer',borderRadius:'8px',border:'2px solid #4a3222',background:active?'#9cbf6e':'#fffdf5',boxShadow:active?'0 2px 0 #4a3222':'none'});
     const swatches=this.SW.map((c,i)=>({
-      pick:()=>this.setState({form:{...this.state.form,c:i}}),
-      style:{width:'20px',height:'20px',borderRadius:'50%',background:c,cursor:'pointer',border:i===form.c?'3px solid #4a3222':'2px solid #c9b797',transform:i===form.c?'scale(1.15)':'none'}
+      pick:()=>this.setState({form:{...this.state.form,c:i,customColor:''}}),
+      style:{width:'20px',height:'20px',borderRadius:'50%',background:c,cursor:'pointer',border:(i===form.c&&!form.customColor)?'3px solid #4a3222':'2px solid #c9b797',transform:(i===form.c&&!form.customColor)?'scale(1.15)':'none'}
     }));
     const setF=(k)=>(e)=>this.setState({form:{...this.state.form,[k]:e.target.value}});
     return {
@@ -742,6 +761,12 @@ class Component extends DCLogic {
       fPrice:form.price, setFPrice:setF('price'),
       fMount:form.mount, setFMount:setF('mount'),
       swatches, addCustom:()=>this.addCustom(),
+      fNew:!ownSel, fOwned:ownSel,
+      setNew:()=>this.setState({form:{...this.state.form,owned:false}}), setOwned:()=>this.setState({form:{...this.state.form,owned:true}}),
+      newBtnStyle:segStyle(!ownSel), ownedBtnStyle:segStyle(ownSel),
+      fLink:form.link, setFLink:setF('link'),
+      fCustomColor:form.customColor||'#9cbf6e', setCustomColor:setF('customColor'),
+      customColorStyle:{position:'relative',display:'inline-block',flexShrink:0,width:'20px',height:'20px',borderRadius:'50%',backgroundImage:"url('color-wheel.jpg')",backgroundSize:'cover',backgroundPosition:'center',cursor:'pointer',border:form.customColor?'3px solid #4a3222':'2px solid #c9b797',transform:form.customColor?'scale(1.15)':'none'},
       openReceipt:()=>this.openReceipt(), closeReceipt:()=>this.closeReceipt(), stop:(e)=>e.stopPropagation(),
       receiptOpen:st.receiptOpen, buyRows, ownedRows,
       hasBuy:buyRows.length>0, noBuy:buyRows.length===0, hasOwned:ownedRows.length>0,
