@@ -81,7 +81,11 @@ input,select{font-family:inherit;color:#4a3222}
           </sc-if>
         </div>
       </sc-for>
-      <details style="margin-top:18px;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px">
+      <sc-if value="{{ formModalBtn }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openCustomModal }}" style="margin-top:18px;width:100%;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px;font-family:'Baloo 2',cursive;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 2px 0 #4a3222;text-align:left" style-hover="background:#fff6e0">＋ Add custom item</button>
+      </sc-if>
+      <sc-if value="{{ formInline }}" hint-placeholder-val="{{ true }}">
+      <details open="{{ formOpenAttr }}" style="margin-top:18px;background:#fffdf5;border:2px solid #4a3222;border-radius:14px;padding:10px 12px">
         <summary style="font-family:'Baloo 2',cursive;font-weight:800;font-size:13px;cursor:pointer">＋ Add custom item</summary>
         <div style="display:flex;gap:8px;margin-top:10px">
           <div onClick="{{ setNew }}" style="{{ newBtnStyle }}">Need to buy</div>
@@ -98,6 +102,9 @@ input,select{font-family:inherit;color:#4a3222}
           <option value="rug">Rug (furniture can sit on it)</option>
           <option value="wall">Wall item</option>
         </select>
+        <sc-if value="{{ fWall }}" hint-placeholder-val="{{ false }}">
+          <label style="display:block;margin-top:8px;border:2px dashed #a9744b;border-radius:10px;padding:7px 9px;font-size:11.5px;font-weight:800;color:#a9744b;cursor:pointer;text-align:center;background:#fffdf5" style-hover="background:#fff6e0">{{ posterLabel }}<input type="file" accept="image/*" onChange="{{ setPoster }}" style="display:none"></label>
+        </sc-if>
         <sc-if value="{{ fNew }}" hint-placeholder-val="{{ true }}">
           <input placeholder="Product link" value="{{ fLink }}" onChange="{{ setFLink }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
           <input placeholder="Price $" value="{{ fPrice }}" onChange="{{ setFPrice }}" style="margin-top:8px;border:2px solid #e8d9bd;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;background:#ffffff;width:100%">
@@ -111,8 +118,22 @@ input,select{font-family:inherit;color:#4a3222}
             <input type="color" value="{{ fCustomColor }}" onChange="{{ setCustomColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;margin:0">
           </label>
         </div>
+        <sc-if value="{{ needShape }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:10px;background:#fff6e0;border:2px dashed #a9744b;border-radius:10px;padding:8px 9px">
+            <div style="display:flex;align-items:flex-start;gap:6px">
+              <div style="flex:1;font-size:11px;font-weight:800;color:#a9744b">{{ shapeHint }}</div>
+              <button onClick="{{ dismissShape }}" style="background:none;border:none;color:#a9744b;font-weight:800;cursor:pointer;font-size:12px;padding:0">✕</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">
+              <sc-for list="{{ shapeChips }}" as="sc" hint-placeholder-count="6">
+                <div onClick="{{ sc.pick }}" style="{{ sc.style }}">{{ sc.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
         <button onClick="{{ addCustom }}" style="margin-top:10px;width:100%;background:#9cbf6e;border:2px solid #4a3222;border-radius:10px;padding:8px 10px;font-weight:800;font-size:12.5px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">Add to catalog</button>
       </details>
+      </sc-if>
     </div>
     <div style="flex:1;min-width:0;position:relative;background:linear-gradient(#c7e3ee,#dcedf3);user-select:none">
       <div style="position:absolute;inset:20px;display:flex;align-items:center;justify-content:center">{{ scene }}</div>
@@ -126,6 +147,17 @@ input,select{font-family:inherit;color:#4a3222}
             <div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:14px;line-height:1.1;white-space:nowrap">{{ selName }}</div>
             <div style="font-size:11px;font-weight:700;color:#a9744b;white-space:nowrap">{{ selDims }}</div>
           </div>
+          <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+            <sc-for list="{{ selSwatches }}" as="ss" hint-placeholder-count="4">
+              <div onClick="{{ ss.pick }}" style="{{ ss.style }}"></div>
+            </sc-for>
+            <label title="Custom colour" style="{{ selWheelStyle }}">
+              <input type="color" value="{{ selColorVal }}" onChange="{{ setSelColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;margin:0">
+            </label>
+            <sc-if value="{{ selHasColor }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ resetSelColor }}" title="Reset colour" style="background:#fffdf5;border:1.5px solid #a9744b;border-radius:999px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;color:#a9744b;padding:0;flex-shrink:0">↺</button>
+            </sc-if>
+          </div>
           <button onClick="{{ rotateSel }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">⟳ Rotate</button>
           <button onClick="{{ dupSel }}" style="background:#fffdf5;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">⧉ Duplicate</button>
           <button onClick="{{ delSel }}" style="background:#f3c1b4;border:2px solid #4a3222;border-radius:10px;padding:6px 10px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">✕ Remove</button>
@@ -133,6 +165,65 @@ input,select{font-family:inherit;color:#4a3222}
       </sc-if>
     </div>
   </div>
+  <sc-if value="{{ customModalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCustomModal }}" style="position:absolute;inset:0;background:rgba(74,50,34,0.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px">
+      <div onClick="{{ stop }}" style="width:440px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;background:#fdf6e9;border:3px solid #4a3222;border-radius:20px;box-shadow:0 8px 0 #4a3222;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;background:#f2d38a;border-bottom:3px solid #4a3222">
+          <div style="flex:1;font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;line-height:1.1">＋ Add custom item</div>
+          <button onClick="{{ closeCustomModal }}" style="display:flex;align-items:center;justify-content:center;background:#fffdf5;border:2px solid #4a3222;border-radius:999px;width:30px;height:30px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="background:#f3c1b4">✕</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:14px 18px 18px 18px">
+          <div style="display:flex;gap:8px">
+            <div onClick="{{ setNew }}" style="{{ newBtnStyle }}">Need to buy</div>
+            <div onClick="{{ setOwned }}" style="{{ ownedBtnStyle }}">I own it</div>
+          </div>
+          <input placeholder="Name (e.g. MALM 6-drawer dresser)" value="{{ fName }}" onChange="{{ setFName }}" style="margin-top:10px;border:2px solid #e8d9bd;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;background:#ffffff;width:100%">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+            <input placeholder="Width (in)" value="{{ fW }}" onChange="{{ setFW }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:8px 8px;font-size:13px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+            <input placeholder="Depth (in)" value="{{ fD }}" onChange="{{ setFD }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:8px 8px;font-size:13px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+            <input placeholder="Height (in)" value="{{ fH }}" onChange="{{ setFH }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:8px 8px;font-size:13px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+          </div>
+          <select value="{{ fMount }}" onChange="{{ setFMount }}" style="margin-top:10px;border:2px solid #e8d9bd;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;background:#ffffff;width:100%">
+            <option value="floor">Floor item</option>
+            <option value="rug">Rug (furniture can sit on it)</option>
+            <option value="wall">Wall item</option>
+          </select>
+          <sc-if value="{{ fWall }}" hint-placeholder-val="{{ false }}">
+            <label style="display:block;margin-top:10px;border:2px dashed #a9744b;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:800;color:#a9744b;cursor:pointer;text-align:center;background:#fffdf5" style-hover="background:#fff6e0">{{ posterLabel }}<input type="file" accept="image/*" onChange="{{ setPoster }}" style="display:none"></label>
+          </sc-if>
+          <sc-if value="{{ fNew }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:10px">
+              <input placeholder="Product link" value="{{ fLink }}" onChange="{{ setFLink }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+              <input placeholder="Price $" value="{{ fPrice }}" onChange="{{ setFPrice }}" style="border:2px solid #e8d9bd;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;background:#ffffff;width:100%;min-width:0">
+            </div>
+          </sc-if>
+          <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+            <span style="font-size:12px;font-weight:800">Color</span>
+            <sc-for list="{{ swatches }}" as="s" hint-placeholder-count="5">
+              <div onClick="{{ s.pick }}" style="{{ s.style }}"></div>
+            </sc-for>
+            <label title="Custom colour" style="{{ customColorStyle }}">
+              <input type="color" value="{{ fCustomColor }}" onChange="{{ setCustomColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0;margin:0">
+            </label>
+          </div>
+          <sc-if value="{{ needShape }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:10px;background:#fff6e0;border:2px dashed #a9744b;border-radius:10px;padding:8px 9px">
+              <div style="display:flex;align-items:flex-start;gap:6px">
+                <div style="flex:1;font-size:11px;font-weight:800;color:#a9744b">{{ shapeHint }}</div>
+                <button onClick="{{ dismissShape }}" style="background:none;border:none;color:#a9744b;font-weight:800;cursor:pointer;font-size:12px;padding:0">✕</button>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">
+                <sc-for list="{{ shapeChips }}" as="sc" hint-placeholder-count="6">
+                  <div onClick="{{ sc.pick }}" style="{{ sc.style }}">{{ sc.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <button onClick="{{ addCustom }}" style="margin-top:12px;width:100%;background:#9cbf6e;border:2px solid #4a3222;border-radius:10px;padding:9px 10px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 2px 0 #4a3222" style-hover="transform:translateY(-1px)">Add to catalog</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
   <sc-if value="{{ receiptOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeReceipt }}" style="position:absolute;inset:0;background:rgba(74,50,34,0.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px">
       <div onClick="{{ stop }}" style="width:520px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;background:#fdf6e9;border:3px solid #4a3222;border-radius:20px;box-shadow:0 8px 0 #4a3222;overflow:hidden">
@@ -186,7 +277,7 @@ input,select{font-family:inherit;color:#4a3222}
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;wallColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#fbf2e2&quot;,&quot;options&quot;:[&quot;#fbf2e2&quot;,&quot;#e9efdc&quot;,&quot;#f6e3de&quot;,&quot;#e6eef2&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;while dragging&quot;,&quot;options&quot;:[&quot;while dragging&quot;,&quot;always&quot;,&quot;never&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showDoorClearance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Room&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;wallColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#fbf2e2&quot;,&quot;options&quot;:[&quot;#fbf2e2&quot;,&quot;#e9efdc&quot;,&quot;#f6e3de&quot;,&quot;#e6eef2&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;while dragging&quot;,&quot;options&quot;:[&quot;while dragging&quot;,&quot;always&quot;,&quot;never&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;showDoorClearance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Room&quot;},&quot;customFormStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;sidebar accordion&quot;,&quot;options&quot;:[&quot;sidebar accordion&quot;,&quot;always open&quot;,&quot;popup modal&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Custom items&quot;}}">
 class Component extends DCLogic {
   state = {layouts:{A:[],B:[]}, active:'A', mode:'single', sel:null, dragging:false, custom:[], links:{}, receiptOpen:false, hoverBadge:null, hoverRow:null, collapsed:{}, editMode:false, hidden:{}, form:{name:'',w:'',d:'',h:'',price:'',c:0,mount:'floor',owned:false,link:'',customColor:''}};
   VB = [-275,-85,635,400];
@@ -214,20 +305,40 @@ class Component extends DCLogic {
     ['rug',['rug','carpet','mat']],
     ['table',['table','desk','nightstand','stand','vanity','sidetable','side table']]
   ];
-  inferKind(name){const n=(name||'').toLowerCase(); for(let i=0;i<this.KINDWORDS.length;i++){const k=this.KINDWORDS[i][0],ws=this.KINDWORDS[i][1]; if(ws.some(w=>n.indexOf(w)>=0))return k;} return null;}
-  pickShape(name){
-    const opts=['table','chair','sofa','bed','lamp','plant','shelf','drawer','wardrobe','console','kallax','cart','ottoman','basket','tv'];
-    const a=window.prompt('No shape matched “'+((name||'').trim()||'item')+'”. Pick the closest by number:\n'+opts.map((o,i)=>(i+1)+') '+o).join('   '),'1');
-    if(a===null)return null; const t=(a||'').trim().toLowerCase(); const num=parseInt(t,10);
-    if(num>=1&&num<=opts.length)return opts[num-1];
-    if(opts.indexOf(t)>=0)return t; return 'table';
+  // ---- Fuzzy name → shape matching (typos, plurals, word order, IKEA-style model names) ----
+  BRANDS = {malm:'drawer',hemnes:'drawer',nordli:'drawer',kullen:'drawer',koppang:'drawer',rast:'drawer',tarva:'bed',brimnes:'bed',songesand:'bed',neiden:'bed',slattum:'bed',kallax:'kallax',eket:'kallax',billy:'shelf',vittsjo:'shelf',ivar:'shelf',lerberg:'shelf',omar:'shelf',hyllis:'shelf',ektorp:'sofa',kivik:'sofa',friheten:'sofa',klippan:'sofa',soderhamn:'sofa',landskrona:'sofa',uppland:'sofa',morabo:'sofa',poang:'chair',strandmon:'chair',pello:'chair',markus:'chair',jarvfjallet:'chair',odger:'chair',lack:'table',lisabo:'table',gladom:'table',bekant:'table',micke:'table',idasen:'table',linnmon:'table',ingatorp:'roundtable',docksta:'roundtable',pax:'wardrobe',kleppstad:'wardrobe',besta:'console',hektar:'lamp',foto:'lamp',ranarp:'lamp',tertial:'lamp',holmo:'lamp',fejka:'plant',monstera:'plant',pothos:'plant',ficus:'plant',raskog:'cart',stockholm:'rug',lohals:'rug'};
+  norm(s){return (s||'').toLowerCase().replace(/[åä]/g,'a').replace(/ö/g,'o').replace(/[éè]/g,'e').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();}
+  sing(t){if(t.length>4&&/ies$/.test(t))return t.slice(0,-3)+'y'; if(t.length>4&&/(ses|xes|zes|ches|shes)$/.test(t))return t.slice(0,-2); if(t.length>3&&/s$/.test(t)&&!/ss$/.test(t))return t.slice(0,-1); return t;}
+  toks(s){return this.norm(s).split(' ').filter(Boolean).map(t=>this.sing(t));}
+  edist(a,b){if(a===b)return 0; const m=a.length,n=b.length; if(Math.abs(m-n)>2)return 3;
+    let prev=[]; for(let j=0;j<=n;j++)prev[j]=j;
+    for(let i=1;i<=m;i++){const cur=[i]; for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur;}
+    return prev[n];}
+  tokSim(a,b){if(a===b)return 1;
+    const L=Math.min(a.length,b.length);
+    if(L>=5&&(a.indexOf(b)===0||b.indexOf(a)===0))return 0.85;
+    if(L<4)return 0;
+    const d=this.edist(a,b), max=L>=6?2:1;
+    return d<=max?1-0.15*d:0;}
+  phraseScore(nameToks,phrase){const pt=this.toks(phrase); if(!pt.length)return 0; let sum=0;
+    for(let i=0;i<pt.length;i++){let best=0; for(let j=0;j<nameToks.length;j++)best=Math.max(best,this.tokSim(pt[i],nameToks[j])); if(best<=0)return 0; sum+=best;}
+    return (sum/pt.length)*(1+0.15*(pt.length-1));}
+  inferKind(name){
+    const nt=this.toks(name); if(!nt.length)return null;
+    for(let i=0;i<nt.length;i++){const b=this.BRANDS[nt[i]]; if(b)return b;}
+    let bestK=null,bestS=0;
+    this.KINDWORDS.forEach(kw=>{kw[1].forEach(w=>{const s=this.phraseScore(nt,w); if(s>bestS){bestS=s;bestK=kw[0];}});});
+    this.DEFS.forEach(d=>{if(!d.kind)return; const s=this.phraseScore(nt,d.name)*0.95; if(s>bestS){bestS=s;bestK=d.kind;}});
+    return bestS>=0.72?bestK:null;
   }
+  baseDefFor(kind){const sid=this.KIND2SPRITE[kind]; return sid?this.DEFS.find(d=>d.id===sid):null;}
   migrateCustomShapes(){
     let changed=false;
     const custom=(this.state.custom||[]).map(c=>{
       let nc=c;
       if(nc.kind==='custom'){const k=this.inferKind(nc.name); if(k&&this.FLOORKINDS[k]){nc={...nc,kind:k}; changed=true;}}
       if(nc.spriteId==null){const sp=this.KIND2SPRITE[nc.kind]; if(sp){nc=(nc===c?{...c}:nc); nc.spriteId=sp; changed=true;}}
+      if(nc.bw==null&&!nc.wall){const base=this.baseDefFor(nc.kind); if(base){nc=(nc===c?{...c}:nc); nc.bw=base.w; nc.bd=base.d||0.3; nc.bh=base.h||2; changed=true;}}
       return nc;
     });
     if(changed)this.setState({custom},()=>this.save());
@@ -266,8 +377,8 @@ class Component extends DCLogic {
     fetch('sprites/manifest.json').then(r=>r.ok?r.json():null).then(m=>{
       if(!m)return;
       return Promise.all(Object.keys(m).map(k=>fetch('sprites/'+m[k].file).then(r=>r.ok?r.text():null).then(t=>{
-        if(t)m[k].uri='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(t)));
-      }).catch(()=>{}))).then(()=>this.setState({sprites:m}));
+        if(t){m[k].src=t; m[k].uri='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(t)));}
+      }).catch(()=>{}))).then(()=>{this.setState({sprites:m}); this.buildParts(m);});
     }).catch(()=>{});
     fetch('figma/room-shell.svg').then(r=>r.ok?r.text():null).then(t=>{
       if(!t)return; let inner=t.replace(/^[\s\S]*?<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'');
@@ -340,7 +451,268 @@ class Component extends DCLogic {
     }catch(e){}
     return D;
   }
-  spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const sid=d.spriteId||d.id; const key=d.wall?(sid+'-'+(item.wall||'back')):(sid+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?e:null;}
+  spriteFor(d,item){const m=this.state.sprites; if(!m)return null; const sid=d.spriteId||d.id; const key=d.wall?(sid+'-'+(item.wall||'back')):(sid+'-r'+((item.rot||0)%4)); const e=m[key]; return e&&e.uri?{vx:e.vx,vy:e.vy,vw:e.vw,vh:e.vh,uri:e.uri,src:e.src,key}:null;}
+  // ---- Sprite retint (preserves light/dark shading, keeps the #4a3222 ink outline) ----
+  hexToHsl(hex){const m=/^#([0-9a-f]{6})$/i.exec(hex); if(!m)return null; const n=parseInt(m[1],16);
+    const r=(n>>16&255)/255,g=(n>>8&255)/255,b=(n&255)/255;
+    const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2; let h=0,s=0;
+    if(mx!==mn){const d=mx-mn; s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+      h=mx===r?((g-b)/d+(g<b?6:0)):mx===g?((b-r)/d+2):((r-g)/d+4); h/=6;}
+    return {h,s,l};}
+  hslToHex(h,s,l){const f=(p,q,t)=>{if(t<0)t+=1; if(t>1)t-=1; if(t<1/6)return p+(q-p)*6*t; if(t<1/2)return q; if(t<2/3)return p+(q-p)*(2/3-t)*6; return p;};
+    let r,g,b; if(s===0){r=g=b=l;}else{const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q; r=f(p,q,h+1/3); g=f(p,q,h); b=f(p,q,h-1/3);}
+    const c=(v)=>Math.round(v*255).toString(16).padStart(2,'0'); return '#'+c(r)+c(g)+c(b);}
+  tintSvg(src,color){
+    const tgt=this.hexToHsl(color); if(!tgt||!src)return src;
+    const fills=[]; src.replace(/fill="(#[0-9a-fA-F]{6})"/g,(mm,hex)=>{const c=this.hexToHsl(hex.toLowerCase()); if(c&&hex.toLowerCase()!=='#4a3222')fills.push(c.l); return mm;});
+    if(!fills.length)return src;
+    fills.sort((a,b)=>a-b); const med=fills[Math.floor(fills.length/2)];
+    return src.replace(/fill="(#[0-9a-fA-F]{6})"/g,(mm,hex)=>{
+      const hx=hex.toLowerCase(); if(hx==='#4a3222')return mm;
+      const c=this.hexToHsl(hx); if(!c)return mm;
+      const l=Math.max(0.07,Math.min(0.95,tgt.l+(c.l-med)));
+      return 'fill="'+this.hslToHex(tgt.h,Math.max(0.05,tgt.s*(0.35+0.65*c.s)),l)+'"';});
+  }
+  tintedUri(sp,color){
+    if(!color||!sp.src)return sp.uri;
+    this._tints=this._tints||{}; const k=sp.key+'|'+color;
+    if(!this._tints[k])this._tints[k]='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(this.tintSvg(sp.src,color))));
+    return this._tints[k];}
+  // Affine approximation that stretches an iso sprite from its base box (bw×bd×bh ft) to (w×d×h ft)
+  stretchXf(d,item,ox,oy){
+    if(!d.bw)return null;
+    const r=(item.rot||0)%2, w1=d.w, d1=d.d, h1=d.h||d.bh;
+    const aS=(r?d1:w1)/(r?d.bd:d.bw), bS=(r?w1:d1)/(r?d.bw:d.bd), cS=h1/d.bh;
+    if(Math.abs(aS-1)<0.02&&Math.abs(bS-1)<0.02&&Math.abs(cS-1)<0.02)return null;
+    const A=(aS+bS)/2, B=(aS-bS)/4;
+    const wF=8.5*(d.bw+d.bd), wH=12*d.bh, D=(wF*(aS+bS)/2+wH*cS)/(wF+wH);
+    return 'translate('+ox+','+oy+') matrix('+A.toFixed(4)+','+B.toFixed(4)+',0,'+D.toFixed(4)+',0,0) translate('+(-ox)+','+(-oy)+')';}
+  stretchWallXf(d,item,ox,oy){
+    if(!d.bw)return null;
+    const aS=d.w/d.bw, cS=(d.h||d.bh)/d.bh;
+    if(Math.abs(aS-1)<0.02&&Math.abs(cS-1)<0.02)return null;
+    const B=(item.wall==='left'?(cS-aS):(aS-cS))/2;
+    return 'translate('+ox+','+oy+') matrix('+aS.toFixed(4)+','+B.toFixed(4)+',0,'+cS.toFixed(4)+',0,0) translate('+(-ox)+','+(-oy)+')';}
+  // ---- Sprite → 3D-parts decompiler: rebuilds true iso geometry from the designer's SVGs ----
+  parsePathPts(dstr){
+    if(!dstr||/[CcSsQqTtAa]/.test(dstr))return null;
+    const t=dstr.match(/[MLHVZmlhvz]|-?\d*\.?\d+(?:e-?\d+)?/g); if(!t)return null;
+    const pts=[]; let i=0,cx=0,cy=0,cmd=null;
+    while(i<t.length){const tok=t[i];
+      if(/^[MLHVZmlhvz]$/.test(tok)){if((tok==='M'||tok==='m')&&pts.length)return null; cmd=tok; i++; if(tok==='Z'||tok==='z')break; continue;}
+      if(cmd===null)return null;
+      let x=cx,y=cy;
+      if(cmd==='H'){x=parseFloat(t[i]);i++;}
+      else if(cmd==='h'){x=cx+parseFloat(t[i]);i++;}
+      else if(cmd==='V'){y=parseFloat(t[i]);i++;}
+      else if(cmd==='v'){y=cy+parseFloat(t[i]);i++;}
+      else{const a=parseFloat(t[i]),b=parseFloat(t[i+1]);i+=2;
+        if(cmd==='M'||cmd==='L'){x=a;y=b;} else if(cmd==='m'||cmd==='l'){x=cx+a;y=cy+b;} else return null;}
+      if(isNaN(x)||isNaN(y))return null;
+      cx=x;cy=y;pts.push([x,y]);}
+    return pts.length>=3?pts:null;
+  }
+  classifyPoly(pts){
+    let P=pts;
+    if(P.length===5&&Math.abs(P[0][0]-P[4][0])<0.05&&Math.abs(P[0][1]-P[4][1])<0.05)P=P.slice(0,4);
+    if(P.length!==4)return null;
+    const dirs=[],lens={u:0,v:0,w:0};
+    for(let i=0;i<4;i++){const a=P[i],b=P[(i+1)%4]; const dx=b[0]-a[0],dy=b[1]-a[1]; const L=Math.hypot(dx,dy); if(L<0.4)return null;
+      let d3=null;
+      if(Math.abs(dx)<0.07*L)d3='w';
+      else{const s=dy/dx; if(Math.abs(s-0.5)<0.09)d3='u'; else if(Math.abs(s+0.5)<0.09)d3='v';}
+      if(!d3)return null; dirs.push(d3); lens[d3]=Math.max(lens[d3],L);}
+    if(dirs[0]!==dirs[2]||dirs[1]!==dirs[3])return null;
+    const set=dirs[0]+dirs[1];
+    const plane=(set==='uv'||set==='vu')?'top':(set==='uw'||set==='wu')?'front':(set==='vw'||set==='wv')?'side':null;
+    return plane?{plane,pts:P,lens}:null;
+  }
+  sharesVertex(a,b){for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)
+    if(Math.abs(a[i][0]-b[j][0])<0.6&&Math.abs(a[i][1]-b[j][1])<0.6)return true; return false;}
+  solveAny(S,F,T,zLevels,bw,bd,bh){
+    const K=12/8.5, EL=19.0066;
+    let w=F?F.lens.u/EL:null, d=S?S.lens.v/EL:null;
+    let h=F?F.lens.w/12:(S?S.lens.w/12:null);
+    if(T){if(w==null)w=T.lens.u/EL; if(d==null)d=T.lens.v/EL;}
+    if(!(w>0.01&&d>0.01)||h==null||!(h>-0.05))return null;
+    const hh=Math.max(h,0.02);
+    let q1,q2;
+    if(T){let vm=T.pts[0]; T.pts.forEach(p=>{if(p[0]>vm[0])vm=p;});
+      q1=vm[0]/17-w; q2=vm[1]/8.5-w+K*hh;}
+    else{const src2=F||S;
+      let amx=-1e9; src2.pts.forEach(p=>{if(p[0]/17>amx)amx=p[0]/17;});
+      q1=F?(amx-w+d):(amx-w);
+      let mBA=-1e9,mBmA=-1e9;
+      src2.pts.forEach(p=>{const A=p[0]/17,Bv=p[1]/8.5; if(Bv+A>mBA)mBA=Bv+A; if(Bv-A>mBmA)mBmA=Bv-A;});
+      q2=(mBA+mBmA)/2-w-d;}
+    const cands=[0].concat([-(q1+q2)/K,(q1-q2)/K,(2*(bw-w)-q1-q2)/K,(2*(bd-d)+q1-q2)/K].map(v=>Math.round(v*1000)/1000),zLevels);
+    let best=null;
+    for(let ci=0;ci<cands.length;ci++){const z0=cands[ci];
+      if(z0<-0.011)continue;
+      const x0=(q1+q2+K*z0)/2, y0=(q2+K*z0-q1)/2;
+      const pen=Math.max(0,-x0-0.06)+Math.max(0,-y0-0.06)+Math.max(0,x0+w-bw-0.06)+Math.max(0,y0+d-bd-0.06)+0.5*Math.max(0,z0+hh-Math.max(bh,hh)-0.8);
+      if(!best||pen<best._pen-1e-9)best={x:x0,y:y0,z:Math.max(0,z0),w,d,h:hh,_pen:pen};
+      if(pen<0.005)break;}
+    return best;
+  }
+  preParse(src){
+    let doc; try{doc=new DOMParser().parseFromString(src,'image/svg+xml');}catch(e){return null;}
+    if(!doc||doc.querySelector('parsererror'))return null;
+    const els=[]; const walk=(n)=>{Array.prototype.forEach.call(n.children,(ch)=>{const tg=ch.tagName;
+      if(tg==='g'){walk(ch);return;} if(tg==='defs'||tg==='title'||tg==='desc')return; els.push(ch);});};
+    walk(doc.documentElement);
+    const out=[];
+    for(let i=0;i<els.length;i++){const el=els[i], tg=el.tagName;
+      if(el.getAttribute('id')==='bounds')continue;
+      if(el.getAttribute('transform'))return null;
+      const fillRaw=el.getAttribute('fill')||'', fill=fillRaw.toLowerCase();
+      if(tg==='rect'&&(fill==='none'||!fillRaw))continue;
+      if(tg==='circle'){
+        const cx=parseFloat(el.getAttribute('cx')),cy=parseFloat(el.getAttribute('cy')),r=parseFloat(el.getAttribute('r'));
+        if(isNaN(cx)||isNaN(cy)||isNaN(r))return null;
+        out.push({knob:1,cx,cy,r,fill:fillRaw||'#e9c46a'}); continue;}
+      if(tg!=='polygon'&&tg!=='path')return null;
+      let pts=null;
+      if(tg==='polygon'){const raw=(el.getAttribute('points')||'').trim().split(/[\s,]+/).map(parseFloat);
+        if(raw.length<6||raw.some(isNaN))return null; pts=[]; for(let j=0;j+1<raw.length;j+=2)pts.push([raw[j],raw[j+1]]);}
+      else{
+        const dd2=el.getAttribute('d');
+        pts=this.parsePathPts(dd2);
+        if(!pts){ // curved path: accept as a knob if tiny, else reject the sprite
+          const nums=(dd2||'').match(/-?\d*\.?\d+/g); if(!nums)return null;
+          let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+          for(let j=0;j+1<nums.length;j+=2){const x=parseFloat(nums[j]),y=parseFloat(nums[j+1]); mnx=Math.min(mnx,x);mxx=Math.max(mxx,x);mny=Math.min(mny,y);mxy=Math.max(mxy,y);}
+          if(Math.max(mxx-mnx,mxy-mny)<=12){out.push({knob:1,cx:(mnx+mxx)/2,cy:(mny+mxy)/2,r:Math.max(mxx-mnx,mxy-mny)/2,fill:fillRaw}); continue;}
+          return null;}
+      }
+      if(fill.indexOf('rgba')===0)continue; // shadow
+      out.push({pts,fill:fillRaw,noFill:(fill==='none'||!fillRaw),stroke:el.getAttribute('stroke'),sw:el.getAttribute('stroke-width')});}
+    return out;
+  }
+  decompileOnce(els,base,dx,dy,zLevels){
+    const bd=base.d, bw=base.w, bh=base.h||2;
+    const faces=[], knobs=[], strokeFlats=[];
+    for(let i=0;i<els.length;i++){const el=els[i];
+      if(el.knob){const a=(el.cx+dx)/17+bd; knobs.push({a,z:(8.5*(a+bd)-(el.cy+dy))/12,r:el.r,fill:el.fill}); continue;}
+      const pts=el.pts.map(p=>[p[0]+dx,p[1]+dy]);
+      const cl=this.classifyPoly(pts);
+      if(!cl)return null;
+      if(el.noFill){
+        if(cl.plane!=='top')return null;
+        strokeFlats.push({raw:cl.pts,fill:'none',stroke:el.stroke,sw:el.sw}); continue;}
+      faces.push({plane:cl.plane,pts:cl.pts,lens:cl.lens,fill:el.fill});}
+    const parts=[], quads=[], pendTops=[], loneTops=[];
+    const zL=zLevels.slice();
+    const pushBox=(bx,S,F,T)=>{
+      bx.fs=S?S.fill:this.sh(F.fill,0.8); bx.ff=F?F.fill:this.sh(S.fill,1.25); bx.ft=T?T.fill:this.sh((F||S).fill,F?1.29:1.6);
+      delete bx._pen; parts.push(bx);
+      [Math.round((bx.z+bx.h)*100)/100,Math.round(bx.z*100)/100].forEach(zv=>{if(zL.indexOf(zv)<0)zL.push(zv);});};
+    let i2=0;
+    while(i2<faces.length){const f=faces[i2];
+      if(f.plane==='side'){
+        const nx=faces[i2+1], nx2=faces[i2+2];
+        let S=f,F=null,T=null,used=1;
+        if(nx&&nx.plane==='front'&&this.sharesVertex(f.pts,nx.pts)){F=nx;used=2;
+          if(nx2&&nx2.plane==='top'&&(this.sharesVertex(nx2.pts,f.pts)||this.sharesVertex(nx2.pts,nx.pts))){T=nx2;used=3;}
+          else{for(let pi=0;pi<pendTops.length;pi++){if(this.sharesVertex(pendTops[pi].pts,f.pts)||this.sharesVertex(pendTops[pi].pts,nx.pts)){T=pendTops.splice(pi,1)[0];break;}}}}
+        else if(nx&&nx.plane==='top'&&this.sharesVertex(f.pts,nx.pts)){T=nx;used=2;}
+        const bx=(F||T)?this.solveAny(S,F,T,zL,bw,bd,bh):null;
+        if(bx)pushBox(bx,S,F,T);
+        else if(!F&&!T){i2++; continue;} // stray trimmed side face: drop
+        else return null;
+        i2+=used; continue;}
+      if(f.plane==='front'){
+        const nx=faces[i2+1];
+        if(nx&&nx.plane==='top'&&this.sharesVertex(f.pts,nx.pts)){
+          const bx=this.solveAny(null,f,nx,zL,bw,bd,bh);
+          if(!bx)return null;
+          pushBox(bx,null,f,nx); i2+=2; continue;}
+        let a0=1e9,a1=-1e9,z0=1e9,z1=-1e9;
+        f.pts.forEach(p=>{const a=p[0]/17+bd; const z=(8.5*(a+bd)-p[1])/12;
+          a0=Math.min(a0,a);a1=Math.max(a1,a);z0=Math.min(z0,z);z1=Math.max(z1,z);});
+        quads.push({a0,a1,z0,z1,fill:f.fill}); i2++; continue;}
+      pendTops.push(f); loneTops.push(f); i2++; continue;}
+    const flats=strokeFlats.slice();
+    if(!parts.length)loneTops.forEach(f=>{if(pendTops.indexOf(f)>=0)flats.push({raw:f.pts,fill:f.fill,stroke:null,sw:null});});
+    flats.forEach(fl=>{fl.fp=fl.raw.map(p=>{const A=p[0]/17,Bv=p[1]/8.5; return [(A+Bv)/2,(Bv-A)/2];}); delete fl.raw;});
+    if(!parts.length&&!flats.length)return null;
+    return {parts,quads,knobs,flats,zL};
+  }
+  decompile(src,base,ent){
+    if(!src)return null;
+    const els=this.preParse(src); if(!els)return null;
+    const vb=/viewBox="\s*(-?[\d.]+)[ ,]+(-?[\d.]+)/.exec(src);
+    let dx=(ent&&vb)?ent.vx-parseFloat(vb[1]):0, dy=(ent&&vb)?ent.vy-parseFloat(vb[2]):0;
+    let res=null;
+    for(let pass=0;pass<5;pass++){ // auto-calibrate the anchor offset
+      res=this.decompileOnce(els,base,dx,dy,[]);
+      if(!res)return null;
+      res=this.decompileOnce(els,base,dx,dy,res.zL);
+      if(!res)return null;
+      let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+      const acc=(x0,x1,y0,y1)=>{mnx=Math.min(mnx,x0);mxx=Math.max(mxx,x1);mny=Math.min(mny,y0);mxy=Math.max(mxy,y1);};
+      res.parts.forEach(p=>acc(p.x,p.x+p.w,p.y,p.y+p.d));
+      res.flats.forEach(fl=>fl.fp.forEach(pp=>acc(pp[0],pp[0],pp[1],pp[1])));
+      if(mnx>mxx)break;
+      const u=-((mnx+(mxx-base.w))/2), v=-((mny+(mxy-base.d))/2);
+      if(Math.abs(u)<0.02&&Math.abs(v)<0.02)break;
+      dx+=17*(u-v); dy+=8.5*(u+v);
+    }
+    if(!res)return null;
+    if(res.parts.length){ // floor-snap + edge snapping
+      const zmin=Math.min.apply(null,res.parts.map(p=>p.z));
+      if(zmin>0.02&&zmin<0.7){res.parts.forEach(p=>{p.z=Math.max(0,p.z-zmin);});
+        res.quads.forEach(q=>{q.z0=Math.max(0,q.z0-zmin);q.z1=Math.max(0.02,q.z1-zmin);});
+        res.knobs.forEach(k=>{k.z=Math.max(0,k.z-zmin);});}
+      res.parts.forEach(p=>{
+        if(p.z>0&&(p.z<0.12||(p.z<0.3&&p.h>0.8)||(p.z<0.6&&p.h>1.5)||(p.z<1&&p.h>2.5)||(p.z<0.7&&p.w<=0.4&&p.d<=0.4)))p.z=0;
+        if(Math.abs(p.x)<0.12)p.x=0; if(Math.abs(p.y)<0.12)p.y=0;
+        if(Math.abs(p.w-base.w)<0.06)p.x=0; if(Math.abs(p.d-base.d)<0.06)p.y=0;
+        if(Math.abs(p.x+p.w-base.w)<0.12)p.x=base.w-p.w;
+        if(Math.abs(p.y+p.d-base.d)<0.12)p.y=base.d-p.d;});}
+    delete res.zL;
+    return res;
+  }
+  buildParts(m){
+    this._parts={};
+    const ids={}; Object.keys(this.KIND2SPRITE).forEach(k=>{ids[this.KIND2SPRITE[k]]=1;});
+    Object.keys(ids).forEach(sid=>{
+      const base=this.DEFS.find(dd=>dd.id===sid); const e=m[sid+'-r0'];
+      if(!base||base.wall||!e||!e.src)return;
+      try{const P=this.decompile(e.src,base,e);
+        if(P){P.bw=base.w; P.bd=base.d; P.bh=base.h||2; P.key=sid; this._parts[sid]=P;}}catch(err){}
+    });
+    this.forceUpdate();
+  }
+  slice9(v,b,t){
+    const m=Math.min(0.45,b/4);
+    if(t<=2*m||b<=2*m)return v*(t/b);
+    if(v<=m)return v;
+    if(v>=b-m)return t-(b-v);
+    return m+(v-m)*(t-2*m)/(b-2*m);
+  }
+  mapSpan(s,e,b,t){
+    const span=e-s;
+    let ns=this.slice9(s,b,t), ne=this.slice9(e,b,t);
+    if(span<=0.36){const c=(ns+ne)/2; ns=c-span/2; ne=c+span/2;}
+    return ns<=ne?[ns,ne]:[ne,ns];
+  }
+  makeTint(P,col){
+    const tgt=col?this.hexToHsl(col):null; if(!tgt)return (x)=>x;
+    this._ptints=this._ptints||{}; const ck=P.key+'|'+col;
+    if(this._ptints[ck])return this._ptints[ck];
+    const ls=[]; const add=(f)=>{if(!f)return; const c=this.hexToHsl(f.toLowerCase()); if(c)ls.push(c.l);};
+    P.parts.forEach(p=>{add(p.fs);add(p.ff);add(p.ft);});
+    P.quads.forEach(q=>add(q.fill)); P.knobs.forEach(k=>add(k.fill)); P.flats.forEach(fl=>add(fl.fill));
+    ls.sort((a,b)=>a-b); const med=ls.length?ls[Math.floor(ls.length/2)]:0.5;
+    const cache={};
+    const fn=(hex)=>{if(!hex)return hex; const h=hex.toLowerCase(); if(h==='none'||h==='#4a3222')return hex;
+      if(cache[h])return cache[h];
+      const c=this.hexToHsl(h); if(!c)return hex;
+      const l=Math.max(0.07,Math.min(0.95,tgt.l+(c.l-med)));
+      return cache[h]=this.hslToHex(tgt.h,Math.max(0.05,tgt.s*(0.35+0.65*c.s)),l);};
+    this._ptints[ck]=fn; return fn;
+  }
   componentWillUnmount(){window.removeEventListener('keydown',this._kd); this.unbindDrag();}
   save(){const {layouts,custom,active,links,hidden}=this.state; try{localStorage.setItem('studio-sim-v1',JSON.stringify({layouts,custom,active,links,hidden,v2:1}))}catch(e){}}
   allDefs(){const h=this.state.hidden||{}; return this.DEFS.concat(this.state.custom).filter(d=>!h[d.id])}
@@ -498,12 +870,47 @@ class Component extends DCLogic {
     const flush=()=>{parts.sort((m,n)=>(m.x+m.y)-(n.x+n.y)||m.z-n.z); parts.forEach(p=>this.boxOut(out,p.x,p.y,p.w,p.d,p.z,p.h,p.c)); parts.length=0;};
     const FQ=(a1,z1,a2,z2,fill)=>{if(r>=2)return; let pts; if(r===0){const yF=Y+dd; pts=[[X+a1,yF,z1],[X+a2,yF,z1],[X+a2,yF,z2],[X+a1,yF,z2]];}else{const xF=X+dd; pts=[[xF,Y+a1,z1],[xF,Y+a2,z1],[xF,Y+a2,z2],[xF,Y+a1,z2]];} out.push(this.pg(pts,fill,{strokeWidth:1}));};
     const KN=(a,z)=>{if(r>=2)return; const p=r===0?[X+a,Y+dd]:[X+dd,Y+a]; out.push(this.circ(p[0],p[1],z,2.2,'#e9c46a'));};
-    const cx=X+fx/2, cy=Y+fy/2; const H=d.h||1.5; const C=d.c||'#d9a86c';
+    const cx=X+fx/2, cy=Y+fy/2; const H=d.h||1.5; const C=item.c||d.c||'#d9a86c';
     if(d.kind!=='rug')out.push(this.pg([[X-0.1,Y-0.1],[X+fx+0.1,Y-0.1],[X+fx+0.1,Y+fy+0.1],[X-0.1,Y+fy+0.1]],'rgba(74,50,34,0.12)',{stroke:'none'}));
     if(fl.sel)out.push(this.pg([[X-0.25,Y-0.25],[X+fx+0.25,Y-0.25],[X+fx+0.25,Y+fy+0.25],[X-0.25,Y+fy+0.25]],'rgba(224,138,94,0.12)',{stroke:'#e0793e',strokeDasharray:'6 4',strokeWidth:2}));
-    const sp=this.spriteFor(d,item);
-    if(sp){const o=this.S(X,Y,0); this._k++;
-      out.push(React.createElement('image',{key:'img'+this._k,href:sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh}));
+    const P=(d.g==='Custom'&&d.spriteId&&this._parts&&this._parts[d.spriteId])?this._parts[d.spriteId]:null;
+    const sp=P?null:this.spriteFor(d,item);
+    if(P){
+      // True-iso re-projection of the decompiled sprite at this item's exact dims
+      const tint=this.makeTint(P,item.c||d.c||null);
+      const H2=d.h||P.bh;
+      const mX=(s,e)=>this.mapSpan(s,e,P.bw,w), mY=(s,e)=>this.mapSpan(s,e,P.bd,dd), mZ=(s,e)=>this.mapSpan(s,e,P.bh,H2);
+      P.flats.forEach(fl2=>{
+        const pts=fl2.fp.map(pp=>{const nx=mX(pp[0],pp[0])[0], ny=mY(pp[1],pp[1])[0]; const m2=map(nx,ny); return [m2[0],m2[1],0.02];});
+        out.push(this.pg(pts,fl2.fill==='none'?'none':tint(fl2.fill),{stroke:fl2.stroke||'#4a3222',strokeWidth:parseFloat(fl2.sw)||1.6}));
+      });
+      const bxs=P.parts.map(p=>{
+        const ax=mX(p.x,p.x+p.w), ay=mY(p.y,p.y+p.d), az=mZ(p.z,p.z+p.h);
+        const p1=map(ax[0],ay[0]), p2=map(ax[1],ay[1]);
+        return {x:Math.min(p1[0],p2[0]),y:Math.min(p1[1],p2[1]),w:Math.abs(p2[0]-p1[0]),d:Math.abs(p2[1]-p1[1]),z:az[0],h:az[1]-az[0],fs:tint(p.fs),ff:tint(p.ff),ft:tint(p.ft)};});
+      bxs.sort((m2,n2)=>(m2.x+m2.y)-(n2.x+n2.y)||m2.z-n2.z);
+      bxs.forEach(p=>{
+        out.push(this.pg([[p.x+p.w,p.y,p.z+p.h],[p.x+p.w,p.y+p.d,p.z+p.h],[p.x+p.w,p.y+p.d,p.z],[p.x+p.w,p.y,p.z]],p.fs));
+        out.push(this.pg([[p.x,p.y+p.d,p.z+p.h],[p.x+p.w,p.y+p.d,p.z+p.h],[p.x+p.w,p.y+p.d,p.z],[p.x,p.y+p.d,p.z]],p.ff));
+        out.push(this.pg([[p.x,p.y,p.z+p.h],[p.x+p.w,p.y,p.z+p.h],[p.x+p.w,p.y+p.d,p.z+p.h],[p.x,p.y+p.d,p.z+p.h]],p.ft));
+      });
+      if(r<2){
+        P.quads.forEach(q=>{
+          const aa=mX(q.a0,q.a1), zz=mZ(q.z0,q.z1);
+          let pts; if(r===0){const yF=Y+dd; pts=[[X+aa[0],yF,zz[0]],[X+aa[1],yF,zz[0]],[X+aa[1],yF,zz[1]],[X+aa[0],yF,zz[1]]];}
+          else{const xF=X+dd; pts=[[xF,Y+aa[0],zz[0]],[xF,Y+aa[1],zz[0]],[xF,Y+aa[1],zz[1]],[xF,Y+aa[0],zz[1]]];}
+          out.push(this.pg(pts,tint(q.fill),{strokeWidth:1}));
+        });
+        P.knobs.forEach(k=>{
+          const ka=mX(k.a,k.a)[0], kz=mZ(k.z,k.z)[0];
+          const p=r===0?[X+ka,Y+dd]:[X+dd,Y+ka];
+          out.push(this.circ(p[0],p[1],kz,k.r,tint(k.fill)));
+        });
+      }
+    }else if(sp){const o=this.S(X,Y,0); this._k++;
+      const col=item.c||(d.g==='Custom'?d.c:null);
+      const xf=this.stretchXf(d,item,o[0],o[1]);
+      out.push(React.createElement('image',{key:'img'+this._k,href:col?this.tintedUri(sp,col):sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh,transform:xf||undefined}));
     }else switch(d.kind){
       case 'bed':
         B(0,0,w,0.35,0,2.7,'#8b5e3c'); B(0,0.2,w,dd-0.2,0,0.85,'#a9744b');
@@ -580,7 +987,7 @@ class Component extends DCLogic {
         const s0=this.S(cx,cy,0); const yT=this.S(cx,cy,H)[1], yB=this.S(cx,cy,H-0.8)[1];
         out.push(this.ln([cx,cy,0.14],[cx,cy,H-0.75],{stroke:'#6f5138',strokeWidth:2.5}));
         const ht=4+2*H, hb=8+3*H;
-        out.push(this.rawPg((s0[0]-ht)+','+yT+' '+(s0[0]+ht)+','+yT+' '+(s0[0]+hb)+','+yB+' '+(s0[0]-hb)+','+yB,d.c||'#f2d38a'));
+        out.push(this.rawPg((s0[0]-ht)+','+yT+' '+(s0[0]+ht)+','+yT+' '+(s0[0]+hb)+','+yB+' '+(s0[0]-hb)+','+yB,item.c||d.c||'#f2d38a'));
         break;}
       case 'tv':{
         const dk='#33333b';
@@ -610,8 +1017,14 @@ class Component extends DCLogic {
     const WQ=(u1,z1,u2,z2,fill,o)=>this.pg([WP(u1,z2),WP(u2,z2),WP(u2,z1),WP(u1,z1)],fill,o);
     const out=[];
     const sp=this.spriteFor(d,item);
-    if(sp){const o=wall==='back'?this.S(u,3,z):this.S(0,u,z); this._k++;
-      out.push(React.createElement('image',{key:'img'+this._k,href:sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh}));
+    if(d.img){
+      const o=wall==='back'?this.S(u,3,z+h):this.S(0,u,z+h); this._k++;
+      out.push(WQ(u-0.08,z-0.08,u+w+0.08,z+h+0.08,'#fffdf5'));
+      out.push(React.createElement('image',{key:'img'+this._k,href:d.img,x:0,y:0,width:w,height:h,preserveAspectRatio:'none',transform:'matrix('+(wall==='back'?17:-17)+',8.5,0,12,'+o[0]+','+o[1]+')'}));
+    }else if(sp){const o=wall==='back'?this.S(u,3,z):this.S(0,u,z); this._k++;
+      const col=item.c||(d.g==='Custom'?d.c:null);
+      const xf=this.stretchWallXf(d,item,o[0],o[1]);
+      out.push(React.createElement('image',{key:'img'+this._k,href:col?this.tintedUri(sp,col):sp.uri,x:o[0]+sp.vx,y:o[1]+sp.vy,width:sp.vw,height:sp.vh,transform:xf||undefined}));
     }else if(d.kind==='tv'){
       out.push(WQ(u-0.06,z-0.06,u+w+0.06,z+h+0.06,'#3d3229'));
       out.push(WQ(u+0.08,z+0.08,u+w-0.08,z+h-0.08,'#31424b',{strokeWidth:1}));
@@ -623,7 +1036,7 @@ class Component extends DCLogic {
     }else{
       out.push(WQ(u-0.1,z-0.1,u+w+0.1,z+h+0.1,'#8b5e3c'));
       out.push(WQ(u+0.06,z+0.06,u+w-0.06,z+h-0.06,'#fdf6e9',{strokeWidth:1}));
-      out.push(WQ(u+0.18,z+0.18,u+w-0.18,z+h-0.18,d.c||'#9cbf6e',{strokeWidth:1}));
+      out.push(WQ(u+0.18,z+0.18,u+w-0.18,z+h-0.18,item.c||d.c||'#9cbf6e',{strokeWidth:1}));
       const s=this.S.apply(this,WP(u+w/2,z+h/2)); this._k++;
       out.push(React.createElement('circle',{key:'sun'+this._k,cx:s[0],cy:s[1],r:Math.min(w,h)*6,fill:'#e9c46a',stroke:'#4a3222',strokeWidth:1}));
     }
@@ -726,25 +1139,44 @@ class Component extends DCLogic {
   }
   fmt(v){const s=Math.round(v*10)/10; return s%1?s.toFixed(1):String(s)}
   tallyOf(k){const items=this.state.layouts[k]||[]; let n=0,t=0,unk=0; items.forEach(i=>{const d=this.def(i.defId); if(!d)return; const ow=!!d.owned||(!d.price&&d.g!=='Custom'); if(ow)return; n++; const p=this.priceOf(d); if(p!=null)t+=p; else unk++;}); return n?(n+' to buy · $'+t+(unk?' · '+unk+' unpriced':'')):'All owned · $0';}
-  addCustom(){
+  setPoster(e){
+    const file=e.target&&e.target.files&&e.target.files[0]; if(!file)return;
+    const rd=new FileReader();
+    rd.onload=()=>{const im=new Image();
+      im.onload=()=>{const mx=600, sc=Math.min(1,mx/Math.max(im.width,im.height));
+        const cv=document.createElement('canvas'); cv.width=Math.max(1,Math.round(im.width*sc)); cv.height=Math.max(1,Math.round(im.height*sc));
+        cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+        this.setState({form:{...this.state.form,img:cv.toDataURL('image/jpeg',0.85),imgAR:im.height/im.width}});};
+      im.src=rd.result;};
+    rd.readAsDataURL(file);
+  }
+  addCustom(shapeOverride){
     const f=this.state.form; const wIn=parseFloat(f.w), dIn=parseFloat(f.d), hIn=parseFloat(f.h);
     const isWall=f.mount==='wall', isRugM=f.mount==='rug';
     if(!(wIn>0)){window.alert('Enter a width in inches'); return;}
     if(!isWall&&!(dIn>0)){window.alert('Enter a depth in inches'); return;}
     const q=(v)=>Math.max(0.25,Math.round(v/12*4)/4);
     const id='c'+Date.now().toString(36);
-    let kind;
+    let kind, img=null;
     if(isRugM)kind='rug';
-    else if(isWall){const n=(f.name||'').toLowerCase(); kind=n.indexOf('mirror')>=0?'mirror':((n.indexOf('tv')>=0||n.indexOf('television')>=0)?'tv':'customwall');}
-    else{kind=this.inferKind(f.name); if(!kind||!this.FLOORKINDS[kind]){kind=this.pickShape(f.name);} if(!kind)kind='custom';}
+    else if(isWall){
+      if(f.img){kind='poster'; img=f.img;}
+      else{const n=(f.name||'').toLowerCase(); kind=n.indexOf('mirror')>=0?'mirror':((n.indexOf('tv')>=0||n.indexOf('television')>=0)?'tv':'customwall');}
+    }
+    else{kind=shapeOverride||this.inferKind(f.name);
+      if(!kind||!this.FLOORKINDS[kind]){this.setState({form:{...f,needShape:true}}); return;}}
+    const base=!isWall?this.baseDefFor(kind):(kind==='mirror'?this.DEFS.find(dd=>dd.id==='mirror'):null);
     const def={id,g:'Custom',name:(f.name||'').trim()||'Custom item',
-      w:q(wIn), d:isWall?0.3:q(dIn), h:hIn>0?q(hIn):(isRugM?0:2), z:3,
+      w:q(wIn), d:isWall?0.3:q(dIn),
+      h:hIn>0?q(hIn):(isRugM?0:(kind==='poster'?q(wIn*(f.imgAR||1)):2)), z:3,
       price:f.owned?0:(parseFloat(f.price)||0), owned:f.owned?1:0,
       c:(f.customColor||this.SW[f.c]), kind, spriteId:this.KIND2SPRITE[kind], wall:isWall?1:0};
+    if(img)def.img=img;
+    if(base){def.bw=base.w; def.bd=base.d||0.3; def.bh=base.h||2;}
     let link=(f.link||'').trim();
     const links={...(this.state.links||{})};
     if(!f.owned&&link){ if(!/^https?:\/\//i.test(link))link='https://'+link; links[id]={url:link,price:(parseFloat(f.price)||null)}; }
-    this.setState({custom:this.state.custom.concat([def]),links,form:{...f,name:'',link:'',price:''}},()=>{this.save(); this.addItem(id);
+    this.setState({custom:this.state.custom.concat([def]),links,customModal:false,form:{...f,name:'',link:'',price:'',img:null,imgAR:null,needShape:false}},()=>{this.save(); this.addItem(id);
       if(!f.owned&&link){ fetch('/api/price?url='+encodeURIComponent(link)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ if(j&&j.price>0)this.setLinkPrice(id,j.price); }); }
     });
   }
@@ -816,6 +1248,14 @@ class Component extends DCLogic {
       style:{width:'20px',height:'20px',borderRadius:'50%',background:c,cursor:'pointer',border:(i===form.c&&!form.customColor)?'3px solid #4a3222':'2px solid #c9b797',transform:(i===form.c&&!form.customColor)?'scale(1.15)':'none'}
     }));
     const setF=(k)=>(e)=>this.setState({form:{...this.state.form,[k]:e.target.value}});
+    const shapeOpts=['table','roundtable','chair','sofa','bed','lamp','plant','shelf','drawer','wardrobe','console','kallax','cart','ottoman','basket','tv'];
+    const shapeChips=shapeOpts.map(k=>({label:k==='roundtable'?'round table':k==='drawer'?'dresser':k,
+      pick:()=>this.addCustom(k),
+      style:{padding:'3px 9px',borderRadius:'999px',border:'1.5px solid #a9744b',background:'#fffdf5',fontSize:'11px',fontWeight:800,color:'#a9744b',cursor:'pointer'}}));
+    const selSwatches=this.SW.map((c)=>({
+      pick:(e)=>{e.stopPropagation(); if(it)this.update(it.uid,{c},()=>this.save());},
+      style:{width:'18px',height:'18px',borderRadius:'50%',background:c,cursor:'pointer',flexShrink:0,border:(it&&it.c===c)?'3px solid #4a3222':'2px solid #c9b797'}
+    }));
     return {
       scene:this.makeScene(st.active,true),
       groups,
@@ -828,6 +1268,19 @@ class Component extends DCLogic {
       fPrice:form.price, setFPrice:setF('price'),
       fMount:form.mount, setFMount:setF('mount'),
       swatches, addCustom:()=>this.addCustom(),
+      needShape:!!form.needShape,
+      shapeHint:'No match for \u201c'+((form.name||'').trim()||'item')+'\u201d \u2014 pick the closest shape:',
+      shapeChips,
+      dismissShape:()=>this.setState({form:{...this.state.form,needShape:false}}),
+      fWall:form.mount==='wall',
+      posterLabel:form.img?'\u2713 Poster image added \u00b7 tap to replace':'\uff0b Add a poster image \u00b7 renders 1:1 (optional)',
+      setPoster:(e)=>this.setPoster(e),
+      selSwatches,
+      selWheelStyle:{position:'relative',display:'inline-block',flexShrink:0,width:'18px',height:'18px',borderRadius:'50%',backgroundImage:"url('color-wheel.jpg')",backgroundSize:'cover',backgroundPosition:'center',cursor:'pointer',border:(it&&it.c&&this.SW.indexOf(it.c)<0)?'3px solid #4a3222':'2px solid #c9b797'},
+      selColorVal:(it&&it.c)||'#9cbf6e',
+      setSelColor:(e)=>{if(it)this.update(it.uid,{c:e.target.value},()=>this.save());},
+      selHasColor:!!(it&&it.c),
+      resetSelColor:(e)=>{e.stopPropagation(); if(it)this.update(it.uid,{c:null},()=>this.save());},
       editMode:st.editMode, toggleEdit:()=>this.toggleEdit(),
       editLabel:st.editMode?'Done':'Edit',
       editBtnStyle:{background:st.editMode?'#9cbf6e':'#fffdf5',border:'2px solid #4a3222',borderRadius:'999px',padding:'4px 11px',fontWeight:800,fontSize:'11px',cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,boxShadow:'0 2px 0 #4a3222'},
@@ -839,6 +1292,12 @@ class Component extends DCLogic {
       fCustomColor:form.customColor||'#9cbf6e', setCustomColor:setF('customColor'),
       customColorStyle:{position:'relative',display:'inline-block',flexShrink:0,width:'20px',height:'20px',borderRadius:'50%',backgroundImage:"url('color-wheel.jpg')",backgroundSize:'cover',backgroundPosition:'center',cursor:'pointer',border:form.customColor?'3px solid #4a3222':'2px solid #c9b797',transform:form.customColor?'scale(1.15)':'none'},
       openReceipt:()=>this.openReceipt(), closeReceipt:()=>this.closeReceipt(), stop:(e)=>e.stopPropagation(),
+      formInline:(this.props.customFormStyle||'sidebar accordion')!=='popup modal',
+      formOpenAttr:(this.props.customFormStyle==='always open')?true:undefined,
+      formModalBtn:this.props.customFormStyle==='popup modal',
+      customModalOpen:!!st.customModal&&this.props.customFormStyle==='popup modal',
+      openCustomModal:()=>this.setState({customModal:true}),
+      closeCustomModal:()=>this.setState({customModal:false}),
       receiptOpen:st.receiptOpen, buyRows, ownedRows,
       hasBuy:buyRows.length>0, noBuy:buyRows.length===0, hasOwned:ownedRows.length>0,
       receiptTotal:'$'+rTotal
